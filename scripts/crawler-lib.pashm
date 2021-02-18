@@ -1,5 +1,5 @@
 #
-# __init__.pashm
+# crawler-lib.pashm
 #
 # The Parham Project
 # Copyright 2021 Parham development team,
@@ -21,14 +21,28 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + '/list.pashm'
-import_once $__dir__ + '/index.pashm'
+class Crawler
+    func __init__(string $path, string $extension)
+        $this->files_list = []
+        $this->get($path, $extension)
+    endfunc
 
-ns parham; ns commands
+    func add_once(string $path, string $extension)
+        if $path->endswith($extension)
+            $this->files_list->append(os.path.abspath($path))
+        endif
+    endfunc
 
-$list = {
-    'list': list_cmd,
-    'index': index_cmd,
-}
-
-endns; endns
+    func get(string $path, string $extension)
+        $files = os.listdir($path)
+        $i = 0
+        while $i < len($files)
+            if os.path.isdir($path + '/' + $files[$i])
+                $this->get($path + '/' + $files[$i], $extension)
+            else
+                $this->add_once($path + '/' + $files[$i], $extension)
+            endif
+            $i = $i + 1
+        endwhile
+    endfunc
+endclass
