@@ -1,0 +1,76 @@
+ns parham
+
+@doc """Parses the `Parhamfile` file to load configuration of a package"""
+class ParhamFile
+    $raw_options = {}
+
+    @doc "Loads Parhamfile from a filepath"
+    func parham.ParhamFile::load_f(string $filepath)
+        $f = open($filepath, 'r')
+        $content = $f->read()
+        $f->close()
+
+        return parham.ParhamFile->loads($content)
+    endfunc
+
+    @doc "Parses content of parhamfile as string"
+    func parham.ParhamFile::loads(string $content)
+        # split the lines
+        $i = 0
+        $lines = $content->splitlines()
+        $orig_lines = []
+        while $i < len($lines)
+            $line = $lines[$i]->strip()
+
+            if $line != ''
+                $line = $line->split('#', 1)[0]->strip()
+                $orig_lines->append($line)
+            endif
+
+            $i = $i + 1
+        endwhile
+
+        # parse options from lines
+        $result = parham.ParhamFile()
+        
+        $i = 0
+        while $i < len($orig_lines)
+            $parts = $orig_lines[$i]->split(' ', 1)
+            $name = $parts[0]->strip()->lower()
+            $value = $parts[1]->strip()
+            $result->raw_options[$name] = $value
+            $i = $i + 1
+        endwhile
+
+        $result->parse_options()
+
+        return $result
+    endfunc
+
+    @doc "Reads the raw options and puts them in seprated fields"
+    func parse_options()
+        $this->raw_options->setdefault('description', '')
+        $this->raw_options->setdefault('version', '0.0.1')
+        $this->raw_options->setdefault('', '')
+        $this->raw_options->setdefault('', '')
+
+        $i = 0
+        $keys = list($this->raw_options-keys())
+        while $i < len($keys)
+            $k = $keys[$i]
+            $v = $this->raw_options[$k]
+
+            if $k == 'name'
+                $this->name = $v
+            elif $k == 'description'
+                $this->description = $v
+            elif $k == 'version'
+                $this->version = $v
+            endif
+
+            $i = $i + 1
+        endwhile
+    endfunc
+endclass
+
+endns
