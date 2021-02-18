@@ -1,5 +1,5 @@
 # Parham Command Line Parser
-The Parham command line layer is handled by `parham/cmdline.md` script.
+The Parham command line layer is handled by `parham/cmdline.pashm` script.
 There is some APIs for parsing and validating the command line arguments.
 
 ## `cmdline.parse_args()`: Parsing the arguments
@@ -8,6 +8,8 @@ Function `parham.cmdline.parse_args` gets the command line arguments as a list a
 For example:
 
 ```bash
+import_once 'parham/cmdline.pashm'
+
 $args = parham.cmdline.parse_args($argv[1:])
 ```
 
