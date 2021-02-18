@@ -1,0 +1,41 @@
+#!/usr/bin/env pashmak
+
+import_once $__dir__ + '/cmdline.pashm'
+import_once $__dir__ + '/commands'
+
+ns parham
+
+func main(array[string] $argv)
+    # parse the arguments
+    $args = parham.cmdline.parse_args($argv)
+
+    # run the command
+    $command_name = 'index'
+    if len($args->arguments) > 0
+        $command_name = $args->arguments[0]
+
+        if not $command_name in list($parham.commands.list->keys())
+            # command not found
+            perror('parham: unknow command "' + $command_name + '"\n')
+            return 1
+        endif
+    endif
+
+    $command_func = $parham.commands.list[$command_name]
+    if $args->arguments
+        $args->arguments->pop(0)
+    endif
+    $code = $command_func($args)
+
+    if $code is null
+        $code = 0
+    endif
+
+    exit($code)
+endfunc
+
+endns
+
+if $__ismain__
+    parham.main($argv[1:])
+endif

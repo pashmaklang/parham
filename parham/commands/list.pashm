@@ -1,0 +1,7 @@
+ns parham; ns commands
+
+func list_cmd($args)
+    println 'the list'
+endfunc
+
+endns; endns

@@ -1,0 +1,7 @@
+ns parham; ns commands
+
+func index_cmd($args)
+    println 'the index'
+endfunc
+
+endns; endns

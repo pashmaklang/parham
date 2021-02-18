@@ -1,0 +1,11 @@
+import_once $__dir__ + '/list.pashm'
+import_once $__dir__ + '/index.pashm'
+
+ns parham; ns commands
+
+$list = {
+    'list': list_cmd,
+    'index': index_cmd,
+}
+
+endns; endns
