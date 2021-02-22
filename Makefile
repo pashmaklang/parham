@@ -9,3 +9,9 @@ mix:
 
 headers:
 	@$(PASHMAK) scripts/update-headers.pashm
+
+test:
+	@$(PASHMAK) tests/run.pashm
+
+all: headers test
+	-@git status

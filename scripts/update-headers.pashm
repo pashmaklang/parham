@@ -85,6 +85,9 @@ $total_paths = [*$total_paths, *$c->files_list]
 $c = Crawler($__dir__ + '/../scripts', '.pashm')
 $total_paths = [*$total_paths, *$c->files_list]
 
+$c = Crawler($__dir__ + '/../tests', '.pashm')
+$total_paths = [*$total_paths, *$c->files_list]
+
 $total_paths->sort()
 
 $i = 0

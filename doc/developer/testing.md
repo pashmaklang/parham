@@ -5,6 +5,8 @@ This is a guide for testing system for this project.
 To run the Parham tests:
 
 ```bash
+$ make test
+# OR
 $ pashmak tests/run.pashm
 # OR
 $ ./tests/run.pashm
