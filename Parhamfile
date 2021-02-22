@@ -1,0 +1,9 @@
+name my test package
+
+description this package does something
+description_file README.md
+
+require foo/bar
+require vendor/package
+
+conflict vendor2/package2

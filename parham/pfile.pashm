@@ -32,13 +32,19 @@ class ParhamFile
 
         # parse options from lines
         $result = parham.ParhamFile()
+        $result->raw_options->setdefault('require', [])
+        $result->raw_options->setdefault('conflict', [])
         
         $i = 0
         while $i < len($orig_lines)
             $parts = $orig_lines[$i]->split(' ', 1)
             $name = $parts[0]->strip()->lower()
             $value = $parts[1]->strip()
-            $result->raw_options[$name] = $value
+            if $name in ('require', 'conflict')
+                $result->raw_options[$name]->append($value)
+            else
+                $result->raw_options[$name] = $value
+            endif
             $i = $i + 1
         endwhile
 
@@ -49,13 +55,14 @@ class ParhamFile
 
     @doc "Reads the raw options and puts them in seprated fields"
     func parse_options()
+        $this->raw_options->setdefault('name', 'package')
         $this->raw_options->setdefault('description', '')
-        $this->raw_options->setdefault('version', '0.0.1')
-        $this->raw_options->setdefault('', '')
-        $this->raw_options->setdefault('', '')
+        $this->raw_options->setdefault('description_file', '')
+        $this->raw_options->setdefault('author', '')
+        $this->raw_options->setdefault('license', '')
 
         $i = 0
-        $keys = list($this->raw_options-keys())
+        $keys = list($this->raw_options->keys())
         while $i < len($keys)
             $k = $keys[$i]
             $v = $this->raw_options[$k]
@@ -64,8 +71,16 @@ class ParhamFile
                 $this->name = $v
             elif $k == 'description'
                 $this->description = $v
-            elif $k == 'version'
-                $this->version = $v
+            elif $k == 'description_file'
+                $this->description_file = $v
+            elif $k == 'require'
+                $this->require = $v
+            elif $k == 'conflict'
+                $this->conflict = $v
+            elif $k == 'author'
+                $this->author = $v
+            elif $k == 'license'
+                $this->license = $v
             endif
 
             $i = $i + 1
@@ -74,3 +89,10 @@ class ParhamFile
 endclass
 
 endns
+
+$a = parham.ParhamFile->load_f('Parhamfile')
+println $a->name
+println $a->description
+println $a->description_file
+println $a->require
+println $a->conflict
