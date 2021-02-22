@@ -11,7 +11,7 @@ while $i < len($files)
     $files[$i] = os.path.abspath($files[$i])->replace('\\', '/')
     if not $files[$i]->endswith('/run.pashm')
         import_once $files[$i]
-        $tests->append(clone(TEST))
+        $tests->append([clone(TEST), $files[$i][len($__dir__)-5:]])
     endif
 
     $i = $i + 1
@@ -21,8 +21,8 @@ println 'Running the tests...'
 # run the tests
 $i = 0
 while $i < len($tests)
-    print '['+str($i+1)+'/'+str(len($tests))+'] ' + $tests[$i]->__docstring__ + '... '
-    $tests[$i]()
+    print '['+str($i+1)+'/'+str(len($tests))+'] ' + $tests[$i][0]->__docstring__ + ' (' + $tests[$i][1] + ')' + '... '
+    $tests[$i][0]()
     println 'PASS'
 
     $i = $i + 1
