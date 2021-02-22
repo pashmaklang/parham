@@ -1,9 +1,13 @@
 NAME my test package
 
+# hello
+# world
+
 DESCRIPTION this package does something
-DESCRIPTION_FILE README.md
+DESCRIPTION_FILE README.md # hi
 
 REQUIRE foo/bar
 REQUIRE vendor/package
 
-CONFLICT vendor2/package2
+# test comment
+CONFLICT vendor2/package2 # other comment

@@ -24,7 +24,9 @@ class ParhamFile
 
             if $line != ''
                 $line = $line->split('#', 1)[0]->strip()
-                $orig_lines->append($line)
+                if $line
+                    $orig_lines->append($line)
+                endif
             endif
 
             $i = $i + 1
