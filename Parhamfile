@@ -1,9 +1,9 @@
-name my test package
+NAME my test package
 
-description this package does something
-description_file README.md
+DESCRIPTION this package does something
+DESCRIPTION_FILE README.md
 
-require foo/bar
-require vendor/package
+REQUIRE foo/bar
+REQUIRE vendor/package
 
-conflict vendor2/package2
+CONFLICT vendor2/package2
