@@ -1,0 +1,116 @@
+#
+# pfile.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+ns parham
+
+@doc """Parses the `Parhamfile` file to load configuration of a package"""
+class ParhamFile
+    $raw_options = {}
+
+    @doc "Loads Parhamfile from a filepath"
+    func parham.ParhamFile::load_f(string $filepath)
+        $f = open($filepath, 'r')
+        $content = $f->read()
+        $f->close()
+
+        return parham.ParhamFile->loads($content)
+    endfunc
+
+    @doc "Parses content of parhamfile as string"
+    func parham.ParhamFile::loads(string $content)
+        # split the lines
+        $i = 0
+        $lines = $content->splitlines()
+        $orig_lines = []
+        while $i < len($lines)
+            $line = $lines[$i]->strip()
+
+            if $line != ''
+                $line = $line->split('#', 1)[0]->strip()
+                if $line
+                    $orig_lines->append($line)
+                endif
+            endif
+
+            $i = $i + 1
+        endwhile
+
+        # parse options from lines
+        $result = parham.ParhamFile()
+        $result->raw_options->setdefault('require', [])
+        $result->raw_options->setdefault('conflict', [])
+        
+        $i = 0
+        while $i < len($orig_lines)
+            $parts = $orig_lines[$i]->split(' ', 1)
+            $name = $parts[0]->strip()->lower()
+            $value = $parts[1]->strip()
+            if $name in ('require', 'conflict')
+                $result->raw_options[$name]->append($value)
+            else
+                $result->raw_options[$name] = $value
+            endif
+            $i = $i + 1
+        endwhile
+
+        $result->parse_options()
+
+        return $result
+    endfunc
+
+    @doc "Reads the raw options and puts them in seprated fields"
+    func parse_options()
+        $this->raw_options->setdefault('name', 'package')
+        $this->raw_options->setdefault('description', '')
+        $this->raw_options->setdefault('description_file', '')
+        $this->raw_options->setdefault('author', '')
+        $this->raw_options->setdefault('license', '')
+
+        $i = 0
+        $keys = list($this->raw_options->keys())
+        while $i < len($keys)
+            $k = $keys[$i]
+            $v = $this->raw_options[$k]
+
+            if $k == 'name'
+                $this->name = $v
+            elif $k == 'description'
+                $this->description = $v
+            elif $k == 'description_file'
+                $this->description_file = $v
+            elif $k == 'require'
+                $this->require = $v
+            elif $k == 'conflict'
+                $this->conflict = $v
+            elif $k == 'author'
+                $this->author = $v
+            elif $k == 'license'
+                $this->license = $v
+            endif
+
+            $i = $i + 1
+        endwhile
+    endfunc
+endclass
+
+endns

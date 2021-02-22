@@ -1,0 +1,53 @@
+#!/usr/bin/env pashmak
+#
+# run.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+# Runs all of the tests
+
+import_once $__dir__ + '/../scripts/crawler-lib.pashm'
+
+println 'Loading the tests...'
+# load the tests
+$files = Crawler($__dir__, '.pashm')->files_list
+$tests = []
+$i = 0
+while $i < len($files)
+    $files[$i] = os.path.abspath($files[$i])->replace('\\', '/')
+    if not $files[$i]->endswith('/run.pashm')
+        import_once $files[$i]
+        $tests->append([clone(TEST), $files[$i][len($__dir__)-5:]])
+    endif
+
+    $i = $i + 1
+endwhile
+
+println 'Running the tests...'
+# run the tests
+$i = 0
+while $i < len($tests)
+    print '['+str($i+1)+'/'+str(len($tests))+'] ' + $tests[$i][0]->__docstring__ + ' (' + $tests[$i][1] + ')' + '... '
+    $tests[$i][0]()
+    println 'PASS'
+
+    $i = $i + 1
+endwhile

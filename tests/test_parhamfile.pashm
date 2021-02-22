@@ -1,0 +1,41 @@
+#
+# test_parhamfile.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../parham/pfile.pashm"
+import_once @test
+
+@doc "Parhamfile parser works"
+func test_parhamfile()
+    $pfile = parham.ParhamFile->load_f($__dir__ + '/files/Parhamfile')
+    test.assertEquals($pfile->name, 'my test package')
+    test.assertEquals($pfile->description, 'this package does something')
+    test.assertEquals($pfile->description_file, 'README.md')
+    test.assertEquals($pfile->require, ['foo/bar', 'vendor/package'])
+    test.assertEquals($pfile->conflict, ['vendor2/package2'])
+endfunc
+
+redefine('TEST', test_parhamfile)
+
+if $__ismain__
+    TEST()
+endif
