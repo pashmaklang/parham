@@ -47,4 +47,8 @@ $pfile->author              # string
 $pfile->license             # string
 $pfile->require             # list (like ['vendor1/package1', 'foo/bar'])
 $pfile->conflict            # list
+
+$pfile->raw_options         # dict
+# example
+$pfile->raw_options['name']
 ```
