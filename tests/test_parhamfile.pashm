@@ -1,0 +1,18 @@
+import_once $__dir__ + "/../parham/pfile.pashm"
+import_once @test
+
+@doc "Parhamfile parser works"
+func test_parhamfile()
+    $pfile = parham.ParhamFile->load_f($__dir__ + '/files/Parhamfile')
+    test.assertEquals($pfile->name, 'my test package')
+    test.assertEquals($pfile->description, 'this package does something')
+    test.assertEquals($pfile->description_file, 'README.md')
+    test.assertEquals($pfile->require, ['foo/bar', 'vendor/package'])
+    test.assertEquals($pfile->conflict, ['vendor2/package2'])
+endfunc
+
+redefine('TEST', test_parhamfile)
+
+if $__ismain__
+    TEST()
+endif

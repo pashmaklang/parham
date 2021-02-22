@@ -1,0 +1,29 @@
+# Runs all of the tests
+
+import_once $__dir__ + '/../scripts/crawler-lib.pashm'
+
+println 'Loading the tests...'
+# load the tests
+$files = Crawler($__dir__, '.pashm')->files_list
+$tests = []
+$i = 0
+while $i < len($files)
+    $files[$i] = os.path.abspath($files[$i])->replace('\\', '/')
+    if not $files[$i]->endswith('/run.pashm')
+        import_once $files[$i]
+        $tests->append(clone(TEST))
+    endif
+
+    $i = $i + 1
+endwhile
+
+println 'Running the tests...'
+# run the tests
+$i = 0
+while $i < len($tests)
+    print '['+str($i+1)+'/'+str(len($tests))+'] ' + $tests[$i]->__docstring__ + '... '
+    $tests[$i]()
+    println 'PASS'
+
+    $i = $i + 1
+endwhile

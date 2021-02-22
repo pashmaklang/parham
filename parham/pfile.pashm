@@ -91,10 +91,3 @@ class ParhamFile
 endclass
 
 endns
-
-$a = parham.ParhamFile->load_f('Parhamfile')
-println $a->name
-println $a->description
-println $a->description_file
-println $a->require
-println $a->conflict
