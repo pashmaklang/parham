@@ -1,7 +1,7 @@
 # TODO
 
 - [x] Create command line layer
-- [ ] Create Parhamfile parser
+- [x] Create Parhamfile parser
 - [ ] Create a version parser
 - [ ] Create Package model
 - [ ] Create Dependency and conflict solver
