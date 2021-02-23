@@ -1,0 +1,103 @@
+#
+# version.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+ns parham; ns version
+
+@doc "Igores non-numeric chars in string and converts in to int"
+func int::try_parse_int(string $str)
+    $i = 0
+    $valid_str = ''
+    $numbers = '0123456789-'
+    while $i < len($str)
+        if $str[$i] in $numbers
+            $valid_str = $valid_str + $str[$i]
+        else
+            $valid_str = $valid_str + str(ord($str[$i]))
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    if $valid_str == ''
+        $valid_str = '0'
+    endif
+
+    return int($valid_str)
+endfunc
+
+@doc "Parses a version from string"
+func list::parse(string $version)
+    $numbers = $version->replace('-', '.-1.')->split('.')
+    $i = 0
+    while $i < len($numbers)
+        $numbers[$i] = try_parse_int($numbers[$i])
+        $i = $i + 1
+    endwhile
+    return $numbers
+endfunc
+
+@doc """Compares two version strings. \
+Returns 1 if a is bigger than b, \
+0 is two versions are equal, \
+and -1 if a is less than b.\
+"""
+func int::compare(list|string $a, list|string $b)
+    if typeof($a) == string
+        $v_a = parham.version.parse($a)
+    else
+        $v_a = $a
+    endif
+    if typeof($a) == string
+        $v_b = parham.version.parse($b)
+    else
+        $v_b = $b
+    endif
+
+    $i = 0
+    while $i < len($v_a) or $i < len($v_b)
+        if $i >= len($v_b)
+            if $v_a[$i] == -1
+                return -1
+            else
+                return 1
+            endif
+        elif $i >= len($v_a)
+            if $v_b[$i] == -1
+                return 1
+            else
+                return -1
+            endif
+        endif
+
+        if $v_a[$i] > $v_b[$i]
+            return 1
+        elif $v_a[$i] < $v_b[$i]
+            return -1
+        endif
+        $i = $i + 1
+    endwhile
+
+    return 0
+endfunc
+
+endns; endns

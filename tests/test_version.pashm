@@ -1,0 +1,51 @@
+#
+# test_version.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../parham/version.pashm"
+import_once @test
+
+@doc "Version parser works"
+func test_version_parser()
+    test.assertEquals(parham.version.compare('1', '1'), 0)
+    test.assertEquals(parham.version.compare('2', '1'), 1)
+    test.assertEquals(parham.version.compare('2', '3'), -1)
+    test.assertEquals(parham.version.compare('2', '3.11'), -1)
+    test.assertEquals(parham.version.compare('3.11', '3.11'), 0)
+    test.assertEquals(parham.version.compare('3.11.1', '3.11'), 1)
+    test.assertEquals(parham.version.compare('2.11.1', '3.11'), -1)
+    test.assertEquals(parham.version.compare('2.11.1', '3.11.2.3'), -1)
+    test.assertEquals(parham.version.compare('9.11.1', '3.11.2.3'), 1)
+    test.assertEquals(parham.version.compare('9.1a1.1', '3.11.2b.3'), 1)
+    test.assertEquals(parham.version.compare('a', 'b'), -1)
+    test.assertEquals(parham.version.compare('b', 'a'), 1)
+    test.assertEquals(parham.version.compare('1b.3', '1a.7'), 1)
+    test.assertEquals(parham.version.compare('1.0', '1.0-a'), 1)
+    test.assertEquals(parham.version.compare('1.0-b', '1.0-a'), 1)
+    test.assertEquals(parham.version.compare('1.0-b', '1.0-c'), -1)
+endfunc
+
+redefine('TEST', test_version_parser)
+
+if $__ismain__
+    TEST()
+endif
