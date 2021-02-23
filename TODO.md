@@ -2,7 +2,7 @@
 
 - [x] Create command line layer
 - [x] Create Parhamfile parser
-- [ ] Create a version parser
+- [x] Create a version parser
 - [ ] Create Package model
 - [ ] Create command show
 - [ ] Create Dependency and conflict solver
