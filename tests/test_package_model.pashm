@@ -1,0 +1,51 @@
+#
+# test_package_model.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../parham/package.pashm"
+import_once @test
+
+@doc "Package model system works"
+func test_package_model()
+    $pkg = parham.Package('f:' + $__dir__ + '/../dist')
+    test.assertFalse($pkg->is_success())
+    test.assertTrue('is not a Git repository' in $pkg->error)
+
+    $pkg = parham.Package('f:' + $__dir__ + '/not-found')
+    test.assertFalse($pkg->is_success())
+    test.assertTrue('not found' in $pkg->error)
+
+    os.rename($__dir__ + '/files/test-repo/dotgit', $__dir__ + '/files/test-repo/.git')
+
+    $pkg = parham.Package('f:' + $__dir__ + '/files/test-repo')
+    test.assertTrue($pkg->is_success())
+    $pkg->versions->sort()
+    test.assertEquals($pkg->versions, ['0.1', '0.2'])
+
+    os.rename($__dir__ + '/files/test-repo/.git', $__dir__ + '/files/test-repo/dotgit')
+endfunc
+
+redefine('TEST', test_package_model)
+
+if $__ismain__
+    TEST()
+endif
