@@ -26,7 +26,7 @@ import_once @test
 
 @doc "Package model system works"
 func test_package_model()
-    $pkg = parham.Package('f:' + $__dir__ + '/../dist')
+    $pkg = parham.Package('f:' + $__dir__ + '/../tests')
     test.assertFalse($pkg->is_success())
     test.assertTrue('is not a Git repository' in $pkg->error)
 
