@@ -27,3 +27,20 @@ This function parses a version string and returns a array from numbers.
 ```bash
 parham.version.parse('1.5.29-a1') # [1, 5, 29, -1, 971]
 ```
+
+## `parham.version.sort_list($list)`
+With this function, you can sort a list of versions.
+
+```bash
+$versions = [
+    '1.0',
+    '3.0',
+    '0.0.1',
+    '0.8',
+    '0.5',
+]
+
+$sorted_versions = parham.version.sort_list($versions)
+
+println $sorted_versions # output: ['0.0.1', '0.5', '0.8', '1.0', '3.0']
+```
