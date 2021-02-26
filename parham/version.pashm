@@ -23,7 +23,7 @@
 
 ns parham; ns version
 
-@doc "Igores non-numeric chars in string and converts in to int"
+@doc "Converts non-numeric chars to their code and converts string to int"
 func int::try_parse_int(string $str)
     $i = 0
     $valid_str = ''
