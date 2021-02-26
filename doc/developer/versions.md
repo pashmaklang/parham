@@ -13,13 +13,7 @@ println parham.version.compare('3.1', '3.1') # `0`
 This function returns `1` if a is bigger than b, `-1` if a is less than b and `0` if both version equal.
 
 ## `parham.version.try_parse_int($str)`
-This function parses a int from string but ignores non-numeric chars and parses without error.
-
-```bash
-parham.version.try_parse_int('12f45') # 1245
-parham.version.try_parse_int('hello') # 0
-parham.version.try_parse_int('hello1a2') # 12
-```
+This function parses a int from string but converts non-numeric chars to their code and parses without error.
 
 ## `parham.version.parse($str)`
 This function parses a version string and returns a array from numbers.
