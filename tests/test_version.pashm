@@ -42,6 +42,17 @@ func test_version_parser()
     test.assertEquals(parham.version.compare('1.0', '1.0-a'), 1)
     test.assertEquals(parham.version.compare('1.0-b', '1.0-a'), 1)
     test.assertEquals(parham.version.compare('1.0-b', '1.0-c'), -1)
+
+    # test sort_list
+    $sorted = parham.version.sort_list([
+        '1.0',
+        '3.0',
+        '0.0.1',
+        '0.8',
+        '0.5',
+    ])
+
+    test.assertEquals($sorted, ['0.0.1', '0.5', '0.8', '1.0', '3.0'])
 endfunc
 
 redefine('TEST', test_version_parser)

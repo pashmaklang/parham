@@ -100,4 +100,30 @@ func int::compare(list|string $a, list|string $b)
     return 0
 endfunc
 
+@doc "Gets a list from versions and sorts them"
+func list::sort_list(list $versions)
+    $sorted_versions = []
+    while len($versions) > 0
+        $i = 0
+        while $i < len($versions)
+            $j = 0
+            $is_bigger_than_all = true
+            while $j < len($versions)
+                if parham.version.compare($versions[$i], $versions[$j]) < 0
+                    $is_bigger_than_all = false
+                endif
+                $j = $j + 1
+            endwhile
+
+            if $is_bigger_than_all
+                $sorted_versions->insert(0, $versions->pop($i))
+            endif
+
+            $i = $i + 1
+        endwhile
+    endwhile
+
+    return $sorted_versions
+endfunc
+
 endns; endns
