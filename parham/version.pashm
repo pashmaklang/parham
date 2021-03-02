@@ -23,8 +23,8 @@
 
 ns parham; ns version
 
-@doc "Converts non-numeric chars to their code and converts string to int"
-func int::try_parse_int(string $str)
+@doc "Converts non-numeric chars to their code and returns new filtered string"
+func string::try_parse_int(string $str)
     $i = 0
     $valid_str = ''
     $numbers = '0123456789-'
@@ -32,7 +32,7 @@ func int::try_parse_int(string $str)
         if $str[$i] in $numbers
             $valid_str = $valid_str + $str[$i]
         else
-            $valid_str = $valid_str + str(ord($str[$i]))
+            $valid_str = $valid_str + '.' + str(ord($str[$i])) + '.'
         endif
 
         $i = $i + 1
@@ -42,16 +42,26 @@ func int::try_parse_int(string $str)
         $valid_str = '0'
     endif
 
-    return int($valid_str)
+    $valid_str = $valid_str->replace('..', '.')->strip()
+
+    if $valid_str == ''
+        $valid_str = '0'
+    endif
+
+    return $valid_str
 endfunc
 
 @doc "Parses a version from string"
 func list::parse(string $version)
+    $version = $version->lstrip('v')
+    $version = $version->lstrip('V')
     $numbers = $version->replace('-', '.-1.')->split('.')
     $i = 0
     while $i < len($numbers)
-        $numbers[$i] = try_parse_int($numbers[$i])
-        $i = $i + 1
+        $tmp = try_parse_int(str($numbers[$i]))->split('.')
+        $tmp = list(map(int, [item for item in $tmp if item != '']))
+        $numbers[$i:$i+1] = $tmp
+        $i = $i + len($tmp)
     endwhile
     return $numbers
 endfunc
