@@ -54,6 +54,22 @@ class FileDriver
 
     @doc "Returns list of versions"
     func load_versions()
+        $this->default_branch = null
+        $branches = os.listdir($this->address + '/.git/refs/heads')
+        if 'main' in $branches
+            $this->default_branch = 'main'
+        elif 'dev' in $branches
+            $this->default_branch = 'dev'
+        elif 'devel' in $branches
+            $this->default_branch = 'devel'
+        elif 'develop' in $branches
+            $this->default_branch = 'develop'
+        elif 'master' in $branches
+            $this->default_branch = 'master'
+        else
+            $this->default_branch = $branches[0]
+        endif
+
         return os.listdir($this->address + '/.git/refs/tags')
     endfunc
 
@@ -113,7 +129,7 @@ class Package
     But if process is successful, return parham.ParhamFile object.\
     """
     func string|parham.ParhamFile::get_version(string $version)
-        if $version not in $this->versions
+        if $version not in $this->versions and $this->driver->default_branch != $version
             return 'version "' + $version + '" not found'
         endif
 

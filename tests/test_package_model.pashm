@@ -87,6 +87,7 @@ func test_package_model()
 
     test.assertEquals($pkg->get_version('0.1')->description, 'hello world')
     test.assertEquals($pkg->get_version('0.2')->description, 'hello world 2')
+    test.assertEquals($pkg->get_version('master')->description, 'hello world 2')
 
     os.chdir($old_cwd)
 endfunc
