@@ -7,3 +7,6 @@
 - [ ] Create command install
 - [ ] Create command list
 - [ ] Create command remove
+- [ ] Create command cache
+- [ ] Create command download
+- [ ] Create command check
