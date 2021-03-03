@@ -4,7 +4,7 @@ The `Parhamfile`, is a file to define and config a package. this file is placed 
 Example of `Parhamfile`:
 
 ```
-NAME a title for my package # (this is not a unique name, its only a title)
+NAME a-unique-name-for-package
 
 DESCRIPTION a short description for the package
 DESCRIPTION_FILE README.md # set a file for long description
