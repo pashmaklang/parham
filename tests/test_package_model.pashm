@@ -1,0 +1,99 @@
+#
+# test_package_model.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../parham/package.pashm"
+import_once @test
+
+@doc "Package model system works"
+func test_package_model()
+    $pkg = parham.Package('f:' + $__dir__ + '/../tests')
+    test.assertFalse($pkg->is_success())
+    test.assertTrue('is not a Git repository' in $pkg->error)
+
+    $pkg = parham.Package('f:' + $__dir__ + '/not-found')
+    test.assertFalse($pkg->is_success())
+    test.assertTrue('not found' in $pkg->error)
+
+    os.rename($__dir__ + '/files/test-repo/dotgit', $__dir__ + '/files/test-repo/.git')
+
+    $pkg = parham.Package('f:' + $__dir__ + '/files/test-repo')
+    test.assertTrue($pkg->is_success())
+    $pkg->versions->sort()
+    test.assertEquals($pkg->versions, ['0.1', '0.2'])
+
+    os.rename($__dir__ + '/files/test-repo/.git', $__dir__ + '/files/test-repo/dotgit')
+
+    # create a test repo
+    $old_cwd = os.getcwd()
+    os.chdir(py_load_module('tempfile')->gettempdir())
+
+    if os.path.exists('parham-test-repo')
+        py_load_module('shutil')->rmtree('parham-test-repo')
+    endif
+
+    os.mkdir('parham-test-repo')
+    os.chdir('parham-test-repo')
+    system('git init -q')
+
+    $f = fopen('a.txt', 'w')
+    $f->write('hi')
+    $f->close()
+
+    $f = fopen('Parhamfile', 'w')
+    $f->write('description hello world')
+    $f->close()
+
+    system('git add -A')
+    system('git commit -m first -q')
+    system('git tag 0.1')
+
+    $f = fopen('b.txt', 'w')
+    $f->write('hello again')
+    $f->close()
+
+    $f = fopen('Parhamfile', 'w')
+    $f->write('description hello world 2')
+    $f->close()
+
+    system('git add -A')
+    system('git commit -m second -q')
+    system('git tag 0.2')
+
+    $pkg = parham.Package('f:.')
+    test.assertTrue($pkg->is_success())
+    test.assertEquals($pkg->versions, ['0.1', '0.2'])
+    
+    test.assertEquals($pkg->get_version('1.1'), 'version "1.1" not found')
+
+    test.assertEquals($pkg->get_version('0.1')->description, 'hello world')
+    test.assertEquals($pkg->get_version('0.2')->description, 'hello world 2')
+    test.assertEquals($pkg->get_version('master')->description, 'hello world 2')
+
+    os.chdir($old_cwd)
+endfunc
+
+redefine('TEST', test_package_model)
+
+if $__ismain__
+    TEST()
+endif

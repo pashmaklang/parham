@@ -4,3 +4,4 @@
 - [Parhamfile parser](parhamfile.md)
 - [Testing](testing.md)
 - [Version parser](versions.md)
+- [Package model](packages.md)

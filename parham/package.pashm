@@ -1,0 +1,140 @@
+#
+# package.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + '/pfile.pashm'
+
+ns parham
+
+@doc "Package driver for local file directories"
+class FileDriver
+    func __init__(string $address)
+        $this->error = null
+        $this->address = $address
+
+        if not os.path.isdir($this->address)
+            $this->error = 'Directory "'+$this->address+'" not found'
+            return
+        endif
+
+        $this->address = os.path.abspath($this->address)
+
+        if not os.path.isdir($this->address + '/.git')
+            $this->error = 'Directory "'+$this->address+'" is not a Git repository'
+            return
+        endif
+
+        try parham_package_version_load_error
+            $this->versions = $this->load_versions()
+        endtry
+        goto after_parham_package_version_load_error; section parham_package_version_load_error
+            $this->error = 'faild to load list of versions: ' + string(^)
+            return
+        section after_parham_package_version_load_error
+    endfunc
+
+    @doc "Returns list of versions"
+    func load_versions()
+        $this->default_branch = null
+        $branches = os.listdir($this->address + '/.git/refs/heads')
+        if 'main' in $branches
+            $this->default_branch = 'main'
+        elif 'dev' in $branches
+            $this->default_branch = 'dev'
+        elif 'devel' in $branches
+            $this->default_branch = 'devel'
+        elif 'develop' in $branches
+            $this->default_branch = 'develop'
+        elif 'master' in $branches
+            $this->default_branch = 'master'
+        else
+            $this->default_branch = $branches[0]
+        endif
+
+        return os.listdir($this->address + '/.git/refs/tags')
+    endfunc
+
+    @doc "Loads `Parhamfile` of a specify version"
+    func string::load_once_version(string $version)
+        $old_cwd = os.getcwd()
+        os.chdir($this->address)
+        $cmd = 'git show ' + $version + ':Parhamfile'
+        $output = subprocess.check_output($cmd, shell=true)->decode()
+        os.chdir($old_cwd)
+        return $output
+    endfunc
+endclass
+
+@doc "The package model"
+class Package
+    func __init__(string $name)
+        $parts = $name->split(':', 1)
+        if len($parts) == 1
+            # default driver is `gh`
+            $name = 'gh:' + $name
+            $parts = $name->split(':', 1)
+        endif
+
+        $this->raw_name = $name
+        $this->type = $parts[0]
+        $this->address = $parts[1]
+        $this->error = null
+
+        # load the driver
+        if $this->type == 'f'
+            $this->driver = parham.FileDriver($this->address)
+        elif $this->type == 'gh'
+            $this->driver = parham.GithubDriver($this->address)
+        else
+            # unknow driver
+            $this->error = 'Unknow driver "'+$this->type+'"'
+            return
+        endif
+
+        # check driver success
+        if $this->driver->error is not null
+            $this->error = $this->driver->error
+            return
+        endif
+
+        $this->versions = $this->driver->versions
+    endfunc
+
+    @doc "Is package successfully loaded"
+    func bool::is_success()
+        return $this->error is null
+    endfunc
+
+    @doc """Loads Parhamfile config of a specify version of package. \
+    Returns errors as string. \
+    But if process is successful, return parham.ParhamFile object.\
+    """
+    func string|parham.ParhamFile::get_version(string $version)
+        if $version not in $this->versions and $this->driver->default_branch != $version
+            return 'version "' + $version + '" not found'
+        endif
+
+        return parham.ParhamFile->loads($this->driver->load_once_version($version))
+    endfunc
+endclass
+
+endns
