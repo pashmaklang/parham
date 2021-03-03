@@ -41,3 +41,11 @@ Usual errors for `f` driver:
 
 ### `$pkg->versions`
 This attribute contains list of versions (git tags).
+
+### `$pkg->get_version($version)`
+This method loads `Parhamfile` config of a specify version in a package.
+
+```bash
+# Example
+println 'Descripion: ' + $pkg->get_version('1.0')->description
+```

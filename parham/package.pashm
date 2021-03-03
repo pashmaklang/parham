@@ -21,6 +21,8 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
+import_once $__dir__ + '/pfile.pashm'
+
 ns parham
 
 @doc "Package driver for local file directories"
@@ -53,6 +55,16 @@ class FileDriver
     @doc "Returns list of versions"
     func load_versions()
         return os.listdir($this->address + '/.git/refs/tags')
+    endfunc
+
+    @doc "Loads `Parhamfile` of a specify version"
+    func string::load_once_version(string $version)
+        $old_cwd = os.getcwd()
+        os.chdir($this->address)
+        $cmd = 'git show ' + $version + ':Parhamfile'
+        $output = subprocess.check_output($cmd, shell=true)->decode()
+        os.chdir($old_cwd)
+        return $output
     endfunc
 endclass
 
@@ -94,6 +106,18 @@ class Package
     @doc "Is package successfully loaded"
     func bool::is_success()
         return $this->error is null
+    endfunc
+
+    @doc """Loads Parhamfile config of a specify version of package. \
+    Returns errors as string. \
+    But if process is successful, return parham.ParhamFile object.\
+    """
+    func string|parham.ParhamFile::get_version(string $version)
+        if $version not in $this->versions
+            return 'version "' + $version + '" not found'
+        endif
+
+        return parham.ParhamFile->loads($this->driver->load_once_version($version))
     endfunc
 endclass
 
