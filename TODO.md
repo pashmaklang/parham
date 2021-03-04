@@ -7,6 +7,7 @@
 - [ ] Create command install
 - [ ] Create command list
 - [ ] Create command remove
-- [ ] Create command cache
-- [ ] Create command download
+- [ ] Create command clear-cache
 - [ ] Create command check
+- [ ] Create command gen-autoload
+- [ ] Create command create-project
