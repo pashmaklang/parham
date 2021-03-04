@@ -21,7 +21,7 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + "/../parham/version.pashm"
+import_once $__dir__ + "/../src/parham/version.pashm"
 import_once @test
 
 @doc "Version parser works"

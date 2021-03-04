@@ -21,13 +21,13 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + "/../parham/pfile.pashm"
+import_once $__dir__ + "/../src/parham/pfile.pashm"
 import_once @test
 
 @doc "Parhamfile parser works"
 func test_parhamfile()
     $pfile = parham.ParhamFile->load_f($__dir__ + '/files/Parhamfile')
-    test.assertEquals($pfile->name, 'my test package')
+    test.assertEquals($pfile->name, 'my-test-package')
     test.assertEquals($pfile->description, 'this package does something')
     test.assertEquals($pfile->description_file, 'README.md')
     test.assertEquals($pfile->require, ['foo/bar', 'vendor/package'])

@@ -27,7 +27,7 @@ For example `tests/test_my_simple_test.pashm`:
 ```bash
 # imports
 import_once @test
-import_once $__dir__ + `/../parham/<something-in-parham>...`
+import_once $__dir__ + `/../src/parham/<something-in-parham>...`
 
 @doc "A Human readable caption for the test (will be showed by `tests/run.pashm`)"
 func test_my_simple_test()

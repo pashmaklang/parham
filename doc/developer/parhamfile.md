@@ -22,7 +22,7 @@ CONFLICT gh:hello/world
 # ...
 ```
 
-Script `parham/pfile.pashm`, contains a class to parse the above syntax.
+Script `src/parham/pfile.pashm`, contains a class to parse the above syntax.
 
 Class `ParhamFile`, has some static methods for paring this syntax.
 Also, the output of the parsed file is a object from `ParhamFile` class.
@@ -31,7 +31,7 @@ Also, the output of the parsed file is a object from `ParhamFile` class.
 To parse this file:
 
 ```bash
-import_once 'parham/pfile.pashm'
+import_once 'src/parham/pfile.pashm'
 
 $pfile = parham.ParhamFile->load_f('/path/to/Parhamfile')
 $pfile = parham.ParhamFile->loads('<content of file as string>')

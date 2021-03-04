@@ -1,6 +1,6 @@
 # Package model
 This section of program handles package data layer.
-This is at `parham/package.pashm`.
+This is at `src/parham/package.pashm`.
 
 ## Class `Package`
 

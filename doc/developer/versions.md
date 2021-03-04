@@ -1,5 +1,5 @@
 # Version parser
-Parham has a version parser in `parham/version.pashm` to parse and compare version numbers.
+Parham has a version parser in `src/parham/version.pashm` to parse and compare version numbers.
 
 ## `parham.version.compare($a, $b)`
 This function compares two versions:

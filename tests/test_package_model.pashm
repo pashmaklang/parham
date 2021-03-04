@@ -21,7 +21,7 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + "/../parham/package.pashm"
+import_once $__dir__ + "/../src/parham/package.pashm"
 import_once @test
 
 @doc "Package model system works"

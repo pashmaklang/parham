@@ -79,7 +79,7 @@ import $__dir__ + '/crawler-lib.pashm'
 
 $total_paths = []
 
-$c = Crawler($__dir__ + '/../parham', '.pashm')
+$c = Crawler($__dir__ + '/../src', '.pashm')
 $total_paths = [*$total_paths, *$c->files_list]
 
 $c = Crawler($__dir__ + '/../scripts', '.pashm')
