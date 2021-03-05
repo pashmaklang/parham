@@ -22,14 +22,12 @@
 #########################################################################
 
 import_once $__dir__ + '/index.pashm'
-import_once $__dir__ + '/list.pashm'
 import_once $__dir__ + '/show.pashm'
 
 ns parham; ns commands
 
 $list = {
     'index': index_cmd,
-    'list': list_cmd,
     'show': show_cmd,
 }
 

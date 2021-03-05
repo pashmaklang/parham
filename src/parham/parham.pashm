@@ -49,7 +49,13 @@ func main(array[string] $argv)
     if $args->arguments
         $args->arguments->pop(0)
     endif
-    $code = $command_func($args)
+
+    if $args->has_option('--help')
+        println $command_func->__docstring__
+        $code = 0
+    else
+        $code = $command_func($args)
+    endif
 
     if $code is null
         $code = 0

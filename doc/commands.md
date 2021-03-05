@@ -1,5 +1,9 @@
 # Parham Commandline usage
 
+General options:
+- `--help`: shows help of a command
+- `--version`: shows version of the Parham
+
 ## Command `show`
 You saw a basic usage for command `show` in the prevoius part.
 This command shows details of a package(s).

@@ -23,8 +23,23 @@
 
 ns parham; ns commands
 
+@doc """\
+Parham - The Pashmak programming language package manager\n\
+\n\
+Usage: parham [subcommand] [options...] [arguments...]\n\
+\n\
+General options:\n\
+    --help: shows help of a command\n\
+    --version: shows version of the Parham\n\
+"""
 func index_cmd($args)
-    println 'the index'
+    if $args->has_option('--version')
+        # TODO : show real version
+        println '0.0.1'
+        return 0
+    endif
+
+    println parham.commands.index_cmd->__docstring__
 endfunc
 
 endns; endns

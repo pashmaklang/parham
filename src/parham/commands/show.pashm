@@ -25,6 +25,10 @@ import_once $__dir__ + '/../package.pashm'
 
 ns parham; ns commands
 
+@doc """\
+This command shows details of packages\n\
+Usage: parham show [options...] package1 package2 ...\
+"""
 func show_cmd($args)
     $result = $args->validate({
         'min_args': 1,
