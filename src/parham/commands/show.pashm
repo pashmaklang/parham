@@ -82,7 +82,7 @@ func show_cmd($args)
                     else
                         if $version->raw_options[$key] != ''
                             if $key == 'description_file'
-                                println $key->capitalize() + ': ' + $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])
+                                println 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[3:]
                             else
                                 println $key->capitalize() + ': ' + $version->raw_options[$key]
                             endif
