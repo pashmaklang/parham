@@ -60,7 +60,7 @@ func test_package_model()
     $f->close()
 
     $f = fopen('Parhamfile', 'w')
-    $f->write('description hello world')
+    $f->write('name test\ndescription hello world')
     $f->close()
 
     system('git add -A')
@@ -72,7 +72,7 @@ func test_package_model()
     $f->close()
 
     $f = fopen('Parhamfile', 'w')
-    $f->write('description hello world 2')
+    $f->write('name test\ndescription hello world 2')
     $f->close()
 
     system('git add -A')
