@@ -70,7 +70,12 @@ class FileDriver
             $this->default_branch = $branches[0]
         endif
 
-        return os.listdir($this->address + '/.git/refs/tags')
+        $list = os.listdir($this->address + '/.git/refs/tags')
+        if not $list
+            $list = [$this->default_branch]
+        endif
+
+        return $list
     endfunc
 
     @doc "Loads `Parhamfile` of a specify version"
