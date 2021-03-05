@@ -27,11 +27,19 @@ ns parham; ns commands
 
 @doc """\
 This command shows details of packages\n\
-Usage: parham show [options...] package1 package2 ...\
+Usage: parham show [options...] package1 package2 ...\n\
+\n\
+Options:\n\
+    --versions: shows list of versions of packages\n\
 """
 func show_cmd($args)
     $result = $args->validate({
         'min_args': 1,
+
+        'options': {
+            '--versions': {
+            }
+        }
     })
     if $result is not true
         println 'parham: show: ' + $result
@@ -69,28 +77,32 @@ func show_cmd($args)
                 perror 'Error: ' + $version + '\n'
             else
                 # show the package
-                $j = 0
-                $version->raw_options['version'] = $pkg_version
-                $keys = list($version->raw_options->keys())
-                $keys->insert(0, $keys->pop($keys->index('name')))
-                while $j < len($keys)
-                    $key = $keys[$j]
-                    if typeof($version->raw_options[$key]) == list
-                        if $version->raw_options[$key]
-                            println $key->capitalize() + ': ' + ', '->join($version->raw_options[$key])
-                        endif
-                    else
-                        if $version->raw_options[$key] != ''
-                            if $key == 'description_file'
-                                println 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[2:]
-                            else
-                                println $key->capitalize() + ': ' + $version->raw_options[$key]
+                if $args->has_option('--versions')
+                    println $pkg_name + ': ' + ', '->join($pkg->versions)
+                else
+                    $j = 0
+                    $version->raw_options['version'] = $pkg_version
+                    $keys = list($version->raw_options->keys())
+                    $keys->insert(0, $keys->pop($keys->index('name')))
+                    while $j < len($keys)
+                        $key = $keys[$j]
+                        if typeof($version->raw_options[$key]) == list
+                            if $version->raw_options[$key]
+                                println $key->capitalize() + ': ' + ', '->join($version->raw_options[$key])
+                            endif
+                        else
+                            if $version->raw_options[$key] != ''
+                                if $key == 'description_file'
+                                    println 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[2:]
+                                else
+                                    println $key->capitalize() + ': ' + $version->raw_options[$key]
+                                endif
                             endif
                         endif
-                    endif
 
-                    $j = $j + 1
-                endwhile
+                        $j = $j + 1
+                    endwhile
+                endif
                 # TODO : handle the log level
                 println "========================"
             endif

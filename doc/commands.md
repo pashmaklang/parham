@@ -16,4 +16,4 @@ $ parham show gh:foo/bar f:/path/to/foo/bar ...
 ```
 
 #### Options
-> This command curently haven't any option or flag
+- `--versions`: shows list of versions of packages
