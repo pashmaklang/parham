@@ -1,0 +1,97 @@
+#
+# show.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + '/../package.pashm'
+
+ns parham; ns commands
+
+func show_cmd($args)
+    $result = $args->validate({
+        'min_args': 1,
+    })
+    if $result is not true
+        println 'parham: show: ' + $result
+        return 1
+    endif
+
+    # load the packages
+    # TODO : handle the log level
+    println "Loading packages list..."
+    println "========================"
+
+    $i = 0
+    while $i < len($args->arguments)
+        $pkg_name = $args->arguments[$i]->split('=')
+        $pkg_version = null
+        if len($pkg_name) > 1
+            $pkg_version = $pkg_name[1]
+        endif
+        $pkg_name = $pkg_name[0]
+
+        $pkg = parham.Package($pkg_name)
+
+        if not $pkg->is_success()
+            # TODO : handle the log level
+            perror 'Error: ' + $pkg->error + '\n'
+        else
+            if $pkg_version is null
+                $pkg_version = $pkg->versions[-1] # set latest version as default
+            endif
+
+            $version = $pkg->get_version($pkg_version)
+
+            if typeof($version) == string
+                # TODO : handle the log level
+                perror 'Error: ' + $version + '\n'
+            else
+                # show the package
+                $j = 0
+                $version->raw_options['version'] = $pkg_version
+                $keys = list($version->raw_options->keys())
+                $keys->insert(0, $keys->pop($keys->index('name')))
+                while $j < len($keys)
+                    $key = $keys[$j]
+                    if typeof($version->raw_options[$key]) == list
+                        if $version->raw_options[$key]
+                            println $key->capitalize() + ': ' + ', '->join($version->raw_options[$key])
+                        endif
+                    else
+                        if $version->raw_options[$key] != ''
+                            println $key->capitalize() + ': ' + $version->raw_options[$key]
+                        endif
+                    endif
+
+                    $j = $j + 1
+                endwhile
+                # TODO : handle the log level
+                println "========================"
+            endif
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    return 0
+endfunc
+
+endns; endns
