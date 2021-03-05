@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Create command show
 - [ ] Create Dependency and conflict solver
 - [ ] Create Package directory handler
 - [ ] Create The installer and remover
