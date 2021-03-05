@@ -78,14 +78,19 @@ class FileDriver
         return $list
     endfunc
 
-    @doc "Loads `Parhamfile` of a specify version"
-    func string::load_once_version(string $version)
+    @doc "Gets a version and file name and loads the file in that version"
+    func string::load_file_content(string $version, string $filename)
         $old_cwd = os.getcwd()
         os.chdir($this->address)
-        $cmd = 'git show ' + $version + ':Parhamfile'
+        $cmd = 'git show ' + repr($version + ':' + $filename)
         $output = subprocess.check_output($cmd, shell=true)->decode()
         os.chdir($old_cwd)
         return $output
+    endfunc
+
+    @doc "Loads `Parhamfile` of a specify version"
+    func string::load_once_version(string $version)
+        return $this->load_file_content($version, 'Parhamfile')
     endfunc
 endclass
 

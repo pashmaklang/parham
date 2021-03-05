@@ -49,3 +49,9 @@ This method loads `Parhamfile` config of a specify version in a package.
 # Example
 println 'Descripion: ' + $pkg->get_version('1.0')->description
 ```
+
+## Driver methods
+The driver of a package is accessible with `$pkg->driver`.
+
+### `$pkg->driver->load_file_content($version, $filename)`
+With this method, you can load content of a specify file in a specify version of package.
