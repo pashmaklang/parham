@@ -56,6 +56,8 @@ class ParsedArgs
     func validate(dict $config)
         $config->setdefault('options', {})
         $config->setdefault('only_known_options', true)
+        $config->setdefault('min_args', null)
+        $config->setdefault('max_args', null)
         $options = $config['options']
 
         $options_keys = list($options->keys())
@@ -106,6 +108,19 @@ class ParsedArgs
 
                 $i = $i + 1
             endwhile
+        endif
+
+        # check argument count
+        if $config['min_args'] is not null
+            if len($this->arguments) < $config['min_args']
+                $result = 'this command requires minimum ' + str($config['min_args']) + ' arguments'
+            endif
+        endif
+        
+        if $config['max_args'] is not null
+            if len($this->arguments) > $config['max_args']
+                $result = 'this command requires maximum ' + str($config['max_args']) + ' arguments'
+            endif
         endif
 
         return $result

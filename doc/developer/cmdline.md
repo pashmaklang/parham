@@ -118,6 +118,17 @@ else
 endif
 ```
 
+Also you can validate maximum and minimum count of arguments:
+
+```bash
+$args->validate({
+    'min_args': 1,
+    'max_args': 2,
+})
+```
+
+if you set the above fields on `null` or don't set them, argument count will be ignored.
+
 ## Command handling
 Parham has some subcommands like `list`, `install`, etc.
 
