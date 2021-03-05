@@ -151,7 +151,7 @@ class Package
         $config = parham.ParhamFile->loads($this->driver->load_once_version($version))
 
         if $config->name == ''
-            return 'package `Parhamfile` not found or is invalid'
+            return 'file `Parhamfile` not found or is invalid'
         endif
 
         return $config

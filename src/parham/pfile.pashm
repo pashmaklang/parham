@@ -80,7 +80,7 @@ class ParhamFile
 
     @doc "Reads the raw options and puts them in seprated fields"
     func parse_options()
-        $this->raw_options->setdefault('name', 'package')
+        $this->raw_options->setdefault('name', '')
         $this->raw_options->setdefault('description', '')
         $this->raw_options->setdefault('description_file', '')
         $this->raw_options->setdefault('author', '')
