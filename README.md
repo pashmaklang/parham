@@ -6,7 +6,7 @@ With this package manager, you can manage libraries and for Pashmak projects and
 This project is licensed under the [GPL-v3](LICENSE).
 
 ## Get started
-To run the parpashmham, enter this command:
+To run the Parham, enter this command:
 
 ```bash
 $ pashmak src/parham/parham.pashm

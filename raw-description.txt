@@ -1,0 +1,5 @@
+The Parham package manager.
+Parham is a package manager for Pashmak programming language.
+With this package manager, you can manage libraries and for Pashmak projects and install/remove/update... them.
+This project is licensed under the GPL-v3.
+Read documentation of this project at https://github.com/pashmaklang/parham
