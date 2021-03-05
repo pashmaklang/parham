@@ -83,7 +83,12 @@ class FileDriver
         $old_cwd = os.getcwd()
         os.chdir($this->address)
         $cmd = 'git show ' + repr($version + ':' + $filename)
+        try parham_package_handle_git_command_error
         $output = subprocess.check_output($cmd, shell=true)->decode()
+        endtry
+        goto after_parham_package_handle_git_command_error; label parham_package_handle_git_command_error
+            $output = ''
+        label after_parham_package_handle_git_command_error
         os.chdir($old_cwd)
         return $output
     endfunc
