@@ -2,3 +2,7 @@ NAME parham
 
 DESCRIPTION The Parham package manager
 DESCRIPTION_FILE raw-description.txt
+
+LICENSE GPL-3
+AUTHOR Parham development team
+HOMEPAGE https://github.com/pashmaklang/parham
