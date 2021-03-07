@@ -1,12 +1,9 @@
 # TODO
 
-- [ ] Create Dependency and conflict solver
-- [ ] Create Package directory handler
-- [ ] Create The installer and remover
-- [ ] Create command install
+- [ ] Create command gen-loader
 - [ ] Create command list
 - [ ] Create command remove
-- [ ] Create command clear-cache
 - [ ] Create command check
-- [ ] Create command gen-autoload
+- [ ] Complete Dependency and conflict solver
+- [ ] Create command clear-cache
 - [ ] Create command create-project

@@ -22,6 +22,7 @@
 #########################################################################
 
 import_once $__dir__ + '/pfile.pashm'
+import_once $__dir__ + '/version.pashm'
 
 ns parham
 
@@ -97,6 +98,20 @@ class FileDriver
     func string::load_once_version(string $version)
         return $this->load_file_content($version, 'Parhamfile')
     endfunc
+
+    @doc "Copies package directory to the target path"
+    func download(string $path, string $version)
+        if os.path.isdir($path)
+            py_load_module('shutil')->rmtree($path)
+        endif
+
+        py_load_module('shutil')->copytree($this->address, $path)
+
+        $old_cwd = os.getcwd()
+        os.chdir($path)
+        system('git checkout -q -b parham-installation ' + repr($version))
+        os.chdir($old_cwd)
+    endfunc
 endclass
 
 @doc "The package model"
@@ -131,7 +146,7 @@ class Package
             return
         endif
 
-        $this->versions = $this->driver->versions
+        $this->versions = parham.version.sort_list($this->driver->versions)
     endfunc
 
     @doc "Is package successfully loaded"
@@ -155,6 +170,72 @@ class Package
         endif
 
         return $config
+    endfunc
+endclass
+
+@doc "This class Handles the `pashmak_modules` directory"
+class PackageDirectory
+    func __init__(string $path)
+        $this->path = $path
+
+        # create directory if not exists
+        if not os.path.isdir($path)
+            os.mkdir($path)
+        endif
+    endfunc
+
+    @doc "Checks a package is installed or not. returns false if no, and returns installed verison if yes"
+    func bool|string::is_installed(string $name)
+        if os.path.isdir($this->path + '/' + $name)
+            if os.path.isfile($this->path + '/' + $name + '/.parham-installed-version')
+                $f = fopen($this->path + '/' + $name + '/.parham-installed-version', 'r')
+                $ver = $f->read()->strip()
+                $f->close()
+                return $ver
+            else
+                return false
+            endif
+        else
+            return false
+        endif
+    endfunc
+
+    func list[list]::installed_list()
+        $list = os.listdir($this->path)
+
+        $result = []
+
+        $i = 0
+        while $i < len($list)
+            $version_f = fopen($this->path + '/' + $list[$i] + '/.parham-installed-version', 'r')
+            $result->append([parham.Package('f:' + $this->path + '/' + $list[$i]), $version_f->read()->strip()])
+            $version_f->close()
+
+            $i = $i + 1
+        endwhile
+
+        return $result
+    endfunc
+endclass
+
+class Installer
+    $error = null
+
+    func install(parham.Package $pkg, string $version, parham.PackageDirectory $pkg_dir)
+        # download the package
+        $ver = $pkg->get_version($version)
+        try parham_installer_handle_download_error
+            $pkg->driver->download($pkg_dir->path + '/' + $ver->name, $version)
+        endtry
+        goto after_parham_installer_handle_download_error; label parham_installer_handle_download_error
+            $this->error = str(^)
+            return
+        label after_parham_installer_handle_download_error
+
+        # set the installed version
+        $f = fopen($pkg_dir->path + '/' + $ver->name + '/.parham-installed-version', 'w')
+        $f->write($version)
+        $f->close()
     endfunc
 endclass
 
