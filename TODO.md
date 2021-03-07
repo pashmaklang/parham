@@ -1,5 +1,6 @@
 # TODO
 
+- [ ] Handle installation from Parhamfile
 - [ ] Create command gen-loader
 - [ ] Create command list
 - [ ] Create command remove
