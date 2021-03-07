@@ -1,5 +1,5 @@
 # Parham Documentation
 
-- [Intorduction](introduction.md)
-- [Commands](commands.md)
+- [Intorduction](00-introduction.md)
+- [Commands](01-commands.md)
 - [Developer Documentation](developer)
