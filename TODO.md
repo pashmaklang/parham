@@ -5,5 +5,6 @@
 - [ ] Create command remove
 - [ ] Create command check
 - [ ] Complete Dependency and conflict solver
+- [ ] Add github package driver
 - [ ] Create command clear-cache
 - [ ] Create command create-project

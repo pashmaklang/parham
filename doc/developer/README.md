@@ -5,3 +5,4 @@
 - [Testing](testing.md)
 - [Version parser](versions.md)
 - [Package model](packages.md)
+- [Dependency/Conflict solver](solver.md)
