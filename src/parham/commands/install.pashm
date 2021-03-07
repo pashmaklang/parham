@@ -62,7 +62,6 @@ func install_cmd($args)
             perror 'Error: ' + $pkg->error + '\n'
         else
             if $pkg_version is null
-                $pkg->versions = parham.version.sort_list($pkg->versions)
                 $pkg_version = $pkg->versions[-1] # set latest version as default
             endif
 
