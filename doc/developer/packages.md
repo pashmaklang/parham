@@ -59,6 +59,9 @@ With this method, you can load content of a specify file in a specify version of
 #### `$pkg->driver->download($target_path, $version)`
 This method downloads/copies a specify version of the package to the target path.
 
+#### `$pkg->driver->get_branches()`
+Returns list of git repository branches.
+
 ## Class `PackageDirectory`
 The Parham packages will be installed in a directory named `pashmak_modules`.
 This class handles this directory and provides some methods for checking installed packages.

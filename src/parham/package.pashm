@@ -56,7 +56,7 @@ class FileDriver
     @doc "Returns list of versions"
     func load_versions()
         $this->default_branch = null
-        $branches = os.listdir($this->address + '/.git/refs/heads')
+        $branches = $this->get_branches()
         if 'main' in $branches
             $this->default_branch = 'main'
         elif 'dev' in $branches
@@ -112,6 +112,11 @@ class FileDriver
         system('git checkout -q -b parham-installation ' + repr($version))
         os.chdir($old_cwd)
     endfunc
+
+    @doc "Returns list of repo branches"
+    func list[string]::get_branches()
+        return os.listdir($this->address + '/.git/refs/heads')
+    endfunc
 endclass
 
 @doc "The package model"
@@ -159,7 +164,8 @@ class Package
     But if process is successful, return parham.ParhamFile object.\
     """
     func string|parham.ParhamFile::get_version(string $version)
-        if $version not in $this->versions and $this->driver->default_branch != $version
+        if $version not in $this->versions and $this->driver->default_branch != $version \
+            and $version not in $this->driver->get_branches()
             return 'version "' + $version + '" not found'
         endif
 
