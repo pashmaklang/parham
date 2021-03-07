@@ -24,12 +24,14 @@
 import_once $__dir__ + '/index.pashm'
 import_once $__dir__ + '/show.pashm'
 import_once $__dir__ + '/install.pashm'
+import_once $__dir__ + '/gen-loader.pashm'
 
 ns parham; ns commands
 
 $list = {
     'index': index_cmd,
     'install': install_cmd,
+    'gen-loader': gen_loader_cmd,
 }
 
 endns; endns

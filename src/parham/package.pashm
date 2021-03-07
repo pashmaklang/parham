@@ -207,9 +207,11 @@ class PackageDirectory
 
         $i = 0
         while $i < len($list)
-            $version_f = fopen($this->path + '/' + $list[$i] + '/.parham-installed-version', 'r')
-            $result->append([parham.Package('f:' + $this->path + '/' + $list[$i]), $version_f->read()->strip()])
-            $version_f->close()
+            if os.path.isdir($this->path + '/' + $list[$i]) and $list[$i] != '__pashmam__'
+                $version_f = fopen($this->path + '/' + $list[$i] + '/.parham-installed-version', 'r')
+                $result->append([parham.Package('f:' + $this->path + '/' + $list[$i]), $version_f->read()->strip()])
+                $version_f->close()
+            endif
 
             $i = $i + 1
         endwhile

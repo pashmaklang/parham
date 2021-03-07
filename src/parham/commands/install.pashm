@@ -141,6 +141,15 @@ func install_cmd($args)
         $i = $i + 1
     endwhile
 
+    # run comman gen-loader
+    try parham_handle_run_gen_loader_command
+        parham.main(['gen-loader'])
+    endtry
+    goto after_parham_handle_run_gen_loader_command; label parham_handle_run_gen_loader_command
+        # TODO : handle the log level
+        perror 'Warning: failed to generate the loader. run `parham gen-loader` manually'
+    label after_parham_handle_run_gen_loader_command
+
     return 0
 endfunc
 

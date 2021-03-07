@@ -1,0 +1,78 @@
+#
+# gen-loader.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + '/../pfile.pashm'
+
+ns parham; ns commands
+
+@doc """\
+Generates pashmak_modules/load.pashm script\n\
+Usage: parham gen-loader [options...]\n\
+"""
+func gen_loader_cmd($args)
+    $result = $args->validate({
+    })
+    if $result is not true
+        println 'parham: install: ' + $result
+        return 1
+    endif
+
+    # load the package directory
+    # TODO : handle global mode
+    $pkg_dir = parham.PackageDirectory(os.getcwd() + '/pashmak_modules')
+
+    $all_paths = []
+
+    $i = 0
+    $list = os.listdir($pkg_dir->path)
+    while $i < len($list)
+        if os.path.isdir($pkg_dir->path + '/' + $list[$i]) and $list[$i] != '__pashmam__'
+            # load paths of package
+            $path = parham.ParhamFile->load_f($pkg_dir->path + '/' + $list[$i] + '/Parhamfile')->path
+
+            $j = 0
+            while $j < len($path)
+                $path[$j] = os.path.abspath($pkg_dir->path + '/' + $list[$i] + '/' + $path[$j])
+
+                $j = $j + 1
+            endwhile
+
+            $all_paths = [*$all_paths, *$path]
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    $pashmak_content = '$all_paths = ' + repr($all_paths) + '; python("os.environ[\'PASHMAKPATH\'] = \':\'.join(self.get_var(\'all_paths\')); self.bootstrap_modules()"); free("all_paths")'
+
+    $f = fopen($pkg_dir->path + '/load.pashm', 'w')
+    $f->write($pashmak_content)
+    $f->close()
+
+    # TODO : handle the log level
+    println 'Loader `' + $pkg_dir->path + '/load.pashm' + '` Generated successfully.'
+
+    return 0
+endfunc
+
+endns; endns
