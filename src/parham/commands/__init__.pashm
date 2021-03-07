@@ -30,6 +30,7 @@ ns parham; ns commands
 
 $list = {
     'index': index_cmd,
+    'show': show_cmd,
     'install': install_cmd,
     'gen-loader': gen_loader_cmd,
 }
