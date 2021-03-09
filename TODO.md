@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Create command list
 - [ ] Create package query parser and checker
 - [ ] Handle installation from Parhamfile
 - [ ] Create command create-project

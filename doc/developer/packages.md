@@ -84,9 +84,9 @@ This method returns list of installed packages in the directory in this structur
 
 ```
 [
-    ['f:/path/to/pkg/installed/dir', 'installed-version'],
-    ['f:/path/to/pkg/installed/dir', 'installed-version'],
-    ['f:/path/to/pkg/installed/dir', 'installed-version'],
+    [<parham.Package object>, 'installed-version'],
+    [<parham.Package object>, 'installed-version'],
+    [<parham.Package object>, 'installed-version'],
 ]
 ```
 

@@ -36,3 +36,18 @@ $ parham gen-loader [options...]
 
 #### Options
 > This command currently haven't any option
+
+## Command `list`
+This command shows list of installed packages.
+
+```bash
+$ parham list [options...]
+```
+
+Output is someting like this:
+
+```
+foo (1.0) - Description of the foo
+bar (14.6.0) - Description of the bar
+...
+```
