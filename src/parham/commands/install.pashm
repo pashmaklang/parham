@@ -1,0 +1,156 @@
+#
+# install.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + '/../solver.pashm'
+import_once $__dir__ + '/../version.pashm'
+
+ns parham; ns commands
+
+@doc """\
+Installs packages\n\
+Usage: parham install [options...] package1 package2\n\
+"""
+func install_cmd($args)
+    $result = $args->validate({
+        'min_args': 1,
+    })
+    if $result is not true
+        println 'parham: install: ' + $result
+        return 1
+    endif
+
+    # load the packages
+    # TODO : handle the log level
+    println "Loading packages list..."
+    println "========================"
+
+    $packages = []
+
+    $i = 0
+    while $i < len($args->arguments)
+        $pkg_name = $args->arguments[$i]->split('=')
+        $pkg_version = null
+        if len($pkg_name) > 1
+            $pkg_version = $pkg_name[1]
+        endif
+        $pkg_name = $pkg_name[0]
+
+        $pkg = parham.Package($pkg_name)
+
+        if not $pkg->is_success()
+            # TODO : handle the log level
+            perror 'Error: ' + $pkg->error + '\n'
+        else
+            if $pkg_version is null
+                $pkg_version = $pkg->versions[-1] # set latest version as default
+            endif
+
+            $version = $pkg->get_version($pkg_version)
+
+            if typeof($version) == string
+                # TODO : handle the log level
+                perror 'Error: ' + $version + '\n'
+            else
+                $packages->append([$pkg, $pkg_version])
+            endif
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    if not $packages
+        return 1
+    endif
+
+    # load the package directory
+    # TODO : handle global mode
+    $pkg_dir = parham.PackageDirectory(os.getcwd() + '/pashmak_modules')
+
+    # add the old packages
+    $packages = [*$pkg_dir->installed_list(), *$packages]
+
+    $solver = parham.DependencySolver()
+
+    $i = 0
+    while $i < len($packages)
+        $solver->install($packages[$i][0], $packages[$i][1])
+
+        if $solver->error is not null
+            # TODO : handle the log level
+            perror 'Solver error: ' + $solver->error + '\n'
+            return 2
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    # TODO : handle the log level
+    println 'Installing the Packages...'
+    println '=========================='
+
+    # install the packages
+    $i = 0
+    while $i < len($solver->for_install)
+        $version = $solver->for_install[$i][0]->get_version($solver->for_install[$i][1])
+        # TODO : handle the log level
+        $installed = $pkg_dir->is_installed($version->name)
+        if $installed == false
+            println 'Installing ' + $version->name + ' (' + $solver->for_install[$i][1] + ') ...'
+        else
+            if parham.version.compare($solver->for_install[$i][1], $installed) == 0
+                # package currently installed
+                println 'Package ' + $version->name + ' currently installed (' + $installed + ') ...'
+                $i = $i + 1
+                continue
+            elif parham.version.compare($solver->for_install[$i][1], $installed) == 1
+                println 'Updating ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...'
+            else
+                println 'Downgrading ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...'
+            endif
+        endif
+
+        # install the package
+        $installer = parham.Installer()
+        $installer->install($solver->for_install[$i][0], $solver->for_install[$i][1], $pkg_dir)
+
+        if $installer->error is not null
+            perror 'Error: ' + $installer->error + '\n'
+            return 1
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    # run comman gen-loader
+    try parham_handle_run_gen_loader_command
+        parham.main(['gen-loader'])
+    endtry
+    goto after_parham_handle_run_gen_loader_command; label parham_handle_run_gen_loader_command
+        # TODO : handle the log level
+        perror 'Warning: failed to generate the loader. run `parham gen-loader` manually'
+    label after_parham_handle_run_gen_loader_command
+
+    return 0
+endfunc
+
+endns; endns

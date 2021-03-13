@@ -1,0 +1,168 @@
+#
+# test_cmdline.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../src/parham/cmdline.pashm"
+import_once @test
+
+@doc "Cmdline parser works"
+func test_cmdline()
+    $args = parham.cmdline.parse_args(['foo', 'bar', '--some-flag', '-a', 'other', '--name=Parsa', '--bar', '--hi=bye=hi'])
+
+    test.assertTrue($args->has_option('--some-flag'))
+    test.assertTrue($args->has_option('--bar'))
+    test.assertTrue($args->has_option('-a'))
+    test.assertTrue($args->has_option('--name'))
+    test.assertFalse($args->has_option('--other'))
+    test.assertFalse($args->has_option('-y'))
+
+    test.assertEquals($args->get_option_value('--some-flag'), null)
+    test.assertEquals($args->get_option_value('--name'), 'Parsa')
+    test.assertEquals($args->get_option_value('--hi'), 'bye=hi')
+    test.assertEquals($args->get_option_value('--not'), null)
+
+    test.assertEquals($args->arguments, ['foo', 'bar', 'other'])
+    test.assertEquals($args->options, {'--some-flag': null, '-a': null, '--name': 'Parsa', '--bar': null, '--hi': 'bye=hi'})
+
+    # test validator
+    test.assertTrue 'unknow' in $args->validate({
+        'options': {}
+    })->lower()
+
+    test.assertTrue 'unknow' in $args->validate({
+    })->lower()
+
+    test.assertTrue 'requires maximum 1' in $args->validate({
+        'max_args': 1
+    })->lower()
+
+    test.assertTrue 'requires minimum 4' in $args->validate({
+        'min_args': 4
+    })->lower()
+
+    test.assertTrue 'unknow' in $args->validate({
+        'min_args': 1,
+        'max_args': 3,
+    })->lower()
+
+    test.assertEquals $args->validate({
+        'options': {
+            '--some-flag': {},
+            '-a': {},
+            '--bar': {},
+            '--name': {},
+            '--hi': {},
+        },
+        'min_args': 1,
+        'max_args': 3,
+    }), true
+
+    $args = parham.cmdline.parse_args(['hello'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'required': true
+            },
+        },
+    })->lower(), 'option --name is required'
+
+    $args = parham.cmdline.parse_args(['hello'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'required': false
+            },
+        },
+    }), true
+
+    $args = parham.cmdline.parse_args(['hello', '--name'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'required': true
+            },
+        },
+    }), true
+
+    $args = parham.cmdline.parse_args(['hello', '--name'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'value_required': true
+            },
+        },
+    })->lower(), 'option --name required parameter'
+
+    $args = parham.cmdline.parse_args(['hello', '--name'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'value_required': false
+            },
+        },
+    }), true
+
+    $args = parham.cmdline.parse_args(['hello', '--name=parsa'])
+    test.assertEquals $args->validate({
+        'options': {
+            '--name': {
+                'value_required': true
+            },
+        },
+    }), true
+
+    $args = parham.cmdline.parse_args(['hello', '--name'])
+    $args->validate({
+        'options': {
+            '--name': {
+                'default_value': 'the name'
+            },
+        },
+    })
+    test.assertEquals $args->get_option_value('--name'), null
+
+    $args = parham.cmdline.parse_args(['hello'])
+    $args->validate({
+        'options': {
+            '--name': {
+                'default_value': 'the name'
+            },
+        },
+    })
+    test.assertEquals $args->get_option_value('--name'), 'the name'
+
+    $args = parham.cmdline.parse_args(['hello', '--name=parsa'])
+    $args->validate({
+        'options': {
+            '--name': {
+                'default_value': 'the name'
+            },
+        },
+    })
+    test.assertEquals $args->get_option_value('--name'), 'parsa'
+endfunc
+
+redefine('TEST', test_cmdline)
+
+if $__ismain__
+    TEST()
+endif

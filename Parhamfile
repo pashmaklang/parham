@@ -6,3 +6,6 @@ DESCRIPTION_FILE raw-description.txt
 LICENSE GPL-3
 AUTHOR Parham development team
 HOMEPAGE https://github.com/pashmaklang/parham
+
+PATH src
+

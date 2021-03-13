@@ -59,13 +59,14 @@ class ParhamFile
         $result = parham.ParhamFile()
         $result->raw_options->setdefault('require', [])
         $result->raw_options->setdefault('conflict', [])
+        $result->raw_options->setdefault('path', [])
         
         $i = 0
         while $i < len($orig_lines)
             $parts = $orig_lines[$i]->split(' ', 1)
             $name = $parts[0]->strip()->lower()
             $value = $parts[1]->strip()
-            if $name in ('require', 'conflict')
+            if $name in ('require', 'conflict', 'path')
                 $result->raw_options[$name]->append($value)
             else
                 $result->raw_options[$name] = $value
@@ -102,6 +103,8 @@ class ParhamFile
                 $this->require = $v
             elif $k == 'conflict'
                 $this->conflict = $v
+            elif $k == 'path'
+                $this->path = $v
             elif $k == 'author'
                 $this->author = $v
             elif $k == 'license'
