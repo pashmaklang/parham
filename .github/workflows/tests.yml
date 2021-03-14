@@ -10,14 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        # TODO : enable windows after releasing Pashmak 0.8.2
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Pashmak
       uses: pashmaklang/setup-pashmak@master
       with:
-        pashmak-version: 0.8.1
+        pashmak-version: 0.8.2
 
     - name: Running Tests
       shell: bash
