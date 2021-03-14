@@ -19,6 +19,7 @@ jobs:
         pashmak-version: 0.8.1
 
     - name: Running Tests
+      shell: bash
       run: |
         git config --global user.email '<>'
         git config --global user.name 'robot'
