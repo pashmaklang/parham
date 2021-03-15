@@ -63,7 +63,7 @@ func gen_loader_cmd($args)
         $i = $i + 1
     endwhile
 
-    $pashmak_content = '$all_paths = ' + repr($all_paths) + '; python("os.environ[\'PASHMAKPATH\'] = \':\'.join(self.get_var(\'all_paths\')); self.bootstrap_modules()"); free("all_paths")'
+    $pashmak_content = '$all_paths = ' + repr($all_paths) + '; python("os.environ[\'PASHMAKPATH\'] = \';\'.join(self.get_var(\'all_paths\')); self.bootstrap_modules()"); free("all_paths")'
 
     $f = fopen($pkg_dir->path + '/load.pashm', 'w')
     $f->write($pashmak_content)
