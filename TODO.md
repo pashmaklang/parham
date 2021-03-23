@@ -11,3 +11,4 @@
 - [ ] Add test for package system new parts
 - [ ] Add test for install system
 - [ ] Add test for command gen-loader
+- [ ] Create script system and command run
