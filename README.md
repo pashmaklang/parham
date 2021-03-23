@@ -1,3 +1,7 @@
+<img src="logo.svg" />
+
+###### Logo by [mehanalavimajd](https://github.com/mehanalavimajd)
+
 # Parham package manager
 Parham is a package manager for [Pashmak programming language](https://github.com/pashmaklang).
 
