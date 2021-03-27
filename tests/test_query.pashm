@@ -53,9 +53,11 @@ func test_query()
     os.mkdir('parham-test-dir')
     os.chdir('parham-test-dir')
     # TODO : use `-qqqq` option to make this quiet
-    println $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
+    system $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
     $dir_path = os.getcwd()
     os.chdir($old_cwd)
+
+    println $dir_path + '/pashmak_modules'
 
     $d = parham.PackageDirectory($dir_path + '/pashmak_modules')
 
