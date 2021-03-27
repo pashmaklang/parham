@@ -3,6 +3,11 @@
 General options:
 - `--help`: shows help of a command
 - `--version`: shows version of the Parham
+- `--global|-g`: enable global mode (for installing/listing packages)
+- `-q`: quiet (level 1)
+- `-qq`: quiet (level 2)
+- `-qqq`: quiet (level 3)
+- `-qqqq`: quiet (level 4)
 
 ## Command `show`
 This command shows details of a package(s).
