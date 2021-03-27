@@ -1,0 +1,3 @@
+if $__ismain__
+    import_run $__dir__ + '/src/parham'
+endif

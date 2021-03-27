@@ -18,5 +18,20 @@ $ pashmak src/parham/parham.pashm
 $ ./src/parham/parham.pashm
 ```
 
+### Installation
+To install Parham on your system, run:
+
+```bash
+$ pashmak src/parham/parham.pashm install f:. --global
+```
+
+Now you can run Parham:
+
+```
+$ pashmak @parham ...
+# OR on UNIX systems
+$ parham ...
+```
+
 ## Documentation
 Read the full documentation [here](doc).
