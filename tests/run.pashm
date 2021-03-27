@@ -29,6 +29,7 @@ import_once $__dir__ + '/../scripts/crawler-lib.pashm'
 println 'Loading the tests...'
 # load the tests
 $files = Crawler($__dir__, '.pashm')->files_list
+$files->sort()
 $tests = []
 $i = 0
 while $i < len($files)

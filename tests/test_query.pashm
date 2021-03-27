@@ -22,8 +22,9 @@
 #########################################################################
 
 import_once $__dir__ + "/../src/parham/package.pashm"
+import_once $__dir__ + "/../src/parham/commands/install.pashm"
+import_once $__dir__ + "/../src/parham/cmdline.pashm"
 import_once @test
-import_once @sys
 
 @doc "Query checker works"
 func test_query()
@@ -53,11 +54,9 @@ func test_query()
     os.mkdir('parham-test-dir')
     os.chdir('parham-test-dir')
     # TODO : use `-qqqq` option to make this quiet
-    system $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
+    parham.commands.install_cmd(parham.cmdline.parse_args(['f:' + $repo_2_path]))
     $dir_path = os.getcwd()
     os.chdir($old_cwd)
-
-    println os.listdir($dir_path + '/pashmak_modules')
 
     $d = parham.PackageDirectory($dir_path + '/pashmak_modules')
 
