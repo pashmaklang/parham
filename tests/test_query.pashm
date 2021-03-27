@@ -57,25 +57,17 @@ func test_query()
 
     $d = parham.PackageDirectory(py_load_module('tempfile')->gettempdir() + '/parham-test-dir/pashmak_modules')
 
-    $tests = [
-        ['b', true],
-        ['b = master', true],
-        ['b != master', false],
-        ['b = 1.0', false],
-        ['b > 1.0', false],
-        ['b < 1.0', true],
-        ['b <= hi', true],
-        ['b >= hi', false],
-        ['b != hi', true],
-        ['b & z', false],
-        ['b | z', true],
-    ]
-
-    $i = 0
-    while $i < len($tests)
-        test.assertEquals $d->query($tests[$i][0]), $tests[$i][1]
-        $i = $i + 1
-    endwhile
+    test.assertEquals $d->query('b'), true
+    test.assertEquals $d->query('b = master'), true
+    test.assertEquals $d->query('b != master'), false
+    test.assertEquals $d->query('b = 1.0'), false
+    test.assertEquals $d->query('b > 1.0'), false
+    test.assertEquals $d->query('b < 1.0'), true
+    test.assertEquals $d->query('b <= hi'), true
+    test.assertEquals $d->query('b >= hi'), false
+    test.assertEquals $d->query('b != hi'), true
+    test.assertEquals $d->query('b & z'), false
+    test.assertEquals $d->query('b | z'), true
 endfunc
 
 redefine('TEST', test_query)
