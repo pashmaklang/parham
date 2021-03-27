@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Create package query parser and checker
 - [ ] Add github package driver
 - [ ] Create command clear-cache
 - [ ] Add test for package system new parts
