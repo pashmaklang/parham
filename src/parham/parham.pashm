@@ -41,7 +41,29 @@ func main(array[string] $argv)
         $is_global = true
     endif
 
+    $q_flag_count = 0
+    if '-q' in $argv
+        $argv->pop($argv->index('-q'))
+        $q_flag_count = 1
+    endif
+    if '-qq' in $argv
+        $argv->pop($argv->index('-qq'))
+        $q_flag_count = 2
+    endif
+    if '-qqq' in $argv
+        $argv->pop($argv->index('-qqq'))
+        $q_flag_count = 3
+    endif
+    if '-qqqq' in $argv
+        $argv->pop($argv->index('-qqqq'))
+        $q_flag_count = 4
+    endif
+
     define('PARHAM_GLOBAL', $is_global)
+    define('PARHAM_LOG_INFO', $q_flag_count <= 0)
+    define('PARHAM_LOG_LOG', $q_flag_count <= 1)
+    define('PARHAM_LOG_WARN', $q_flag_count <= 2)
+    define('PARHAM_LOG_ERR', $q_flag_count <= 3)
 
     $args = parham.cmdline.parse_args($argv)
 
@@ -72,6 +94,8 @@ func main(array[string] $argv)
     if $code is null
         $code = 0
     endif
+
+    $code = int($code)
 
     exit($code)
 endfunc

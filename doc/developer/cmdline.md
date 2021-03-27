@@ -151,3 +151,38 @@ Command name is the key and command function is the value of the key. you should
 If the subcommand is inserted, that function will be run and `ParsedArgs` object will be passed to that.
 
 Also the default command is `index`. means if user don't write subcommand, command `index` will be run.
+
+## Printing (Logging)
+There is a script named `src/parham/log.pashm`. This is a script for handling printing.
+
+We have 4 levels of print:
+- `info`: The unnecessary texts
+- `info`: Normal print
+- `warn`: Warnings
+- `err`: Errors
+
+Look at this example:
+
+```bash
+import_once 'src/parham/log.pashm'
+
+parham.print_info('something')
+parham.print_log('something')
+parham.print_warn('something')
+parham.print_err('something')
+```
+
+For disabling each one of the levels, you should set this names:
+
+```bash
+define('PARHAM_LOG_INFO', false)
+define('PARHAM_LOG_LOG', true)
+define('PARHAM_LOG_WARN', false)
+define('PARHAM_LOG_ERR', true)
+```
+
+Also user can disable the log levels by using this options:
+- `-q` to disable `info`
+- `-qq` to disable `info` and `log`
+- `-qqq` to disable `info`, `log` and `warn`
+- `-qqqq` to disable `info`, `log`, `warn` and `err`

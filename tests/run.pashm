@@ -27,6 +27,10 @@
 import_once $__dir__ + '/../scripts/crawler-lib.pashm'
 
 define('PARHAM_GLOBAL', false)
+define('PARHAM_LOG_INFO', false)
+define('PARHAM_LOG_LOG', false)
+define('PARHAM_LOG_WARN', false)
+define('PARHAM_LOG_ERR', false)
 
 println 'Loading the tests...'
 # load the tests

@@ -22,6 +22,7 @@
 #########################################################################
 
 import_once $__dir__ + '/../pfile.pashm'
+import_once $__dir__ + '/../log.pashm'
 
 ns parham; ns commands
 
@@ -68,8 +69,7 @@ func gen_loader_cmd($args)
     $f->write($pashmak_content)
     $f->close()
 
-    # TODO : handle the log level
-    println 'Loader `' + $pkg_dir->path + '/load.pashm' + '` Generated successfully.'
+    parham.print_info 'Loader `' + $pkg_dir->path + '/load.pashm' + '` Generated successfully.\n'
 
     return 0
 endfunc

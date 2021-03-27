@@ -25,6 +25,7 @@ import_once $__dir__ + '/../solver.pashm'
 import_once $__dir__ + '/../version.pashm'
 import_once $__dir__ + '/../cmdline.pashm'
 import_once $__dir__ + '/../commands/gen-loader.pashm'
+import_once $__dir__ + '/../log.pashm'
 
 ns parham; ns commands
 
@@ -42,9 +43,8 @@ func install_cmd($args)
     endif
 
     # load the packages
-    # TODO : handle the log level
-    println "Loading packages list..."
-    println "========================"
+    parham.print_info "Loading packages list...\n"
+    parham.print_info "========================\n"
 
     $packages = []
 
@@ -60,8 +60,7 @@ func install_cmd($args)
         $pkg = parham.Package($pkg_name)
 
         if not $pkg->is_success()
-            # TODO : handle the log level
-            perror 'Error: ' + $pkg->error + '\n'
+            parham.print_err 'Error: ' + $pkg->error + '\n'
         else
             if $pkg_version is null
                 $pkg_version = $pkg->versions[-1] # set latest version as default
@@ -70,8 +69,7 @@ func install_cmd($args)
             $version = $pkg->get_version($pkg_version)
 
             if typeof($version) == string
-                # TODO : handle the log level
-                perror 'Error: ' + $version + '\n'
+                parham.print_err 'Error: ' + $version + '\n'
             else
                 $packages->append([$pkg, $pkg_version])
             endif
@@ -97,36 +95,33 @@ func install_cmd($args)
         $solver->install($packages[$i][0], $packages[$i][1])
 
         if $solver->error is not null
-            # TODO : handle the log level
-            perror 'Solver error: ' + $solver->error + '\n'
+            parham.print_err 'Solver error: ' + $solver->error + '\n'
             return 2
         endif
 
         $i = $i + 1
     endwhile
 
-    # TODO : handle the log level
-    println 'Installing the Packages...'
-    println '=========================='
+    parham.print_info 'Installing the Packages...\n'
+    parham.print_info '==========================\n'
 
     # install the packages
     $i = 0
     while $i < len($solver->for_install)
         $version = $solver->for_install[$i][0]->get_version($solver->for_install[$i][1])
-        # TODO : handle the log level
         $installed = $pkg_dir->is_installed($version->name)
         if $installed == false
-            println 'Installing ' + $version->name + ' (' + $solver->for_install[$i][1] + ') ...'
+            parham.print_log 'Installing ' + $version->name + ' (' + $solver->for_install[$i][1] + ') ...\n'
         else
             if parham.version.compare($solver->for_install[$i][1], $installed) == 0
                 # package currently installed
-                println 'Package ' + $version->name + ' currently installed (' + $installed + ') ...'
+                parham.print_log 'Package ' + $version->name + ' currently installed (' + $installed + ') ...\n'
                 $i = $i + 1
                 continue
             elif parham.version.compare($solver->for_install[$i][1], $installed) == 1
-                println 'Updating ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...'
+                parham.print_log 'Updating ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...\n'
             else
-                println 'Downgrading ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...'
+                parham.print_log 'Downgrading ' + $version->name + ' (to ' + $solver->for_install[$i][1] + ') ...\n'
             endif
         endif
 

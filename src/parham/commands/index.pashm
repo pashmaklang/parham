@@ -21,6 +21,8 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
+import_once $__dir__ + '/../log.pashm'
+
 ns parham; ns commands
 
 @doc """\
@@ -31,7 +33,11 @@ Usage: parham [subcommand] [options...] [arguments...]\n\
 General options:\n\
     --help: shows help of a command\n\
     --version: shows version of the Parham\n\
-    --global|-g: enable global mode (for installing/listing packages)
+    --global|-g: enable global mode (for installing/listing packages)\n\
+    -q: quiet (level 1)\n\
+    -qq: quiet (level 2)\n\
+    -qqq: quiet (level 3)\n\
+    -qqqq: quiet (level 4)\n\
 """
 func index_cmd($args)
     if $args->has_option('--version')

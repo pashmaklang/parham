@@ -22,6 +22,7 @@
 #########################################################################
 
 import_once $__dir__ + '/../package.pashm'
+import_once $__dir__ + '/../log.pashm'
 
 ns parham; ns commands
 
@@ -47,9 +48,8 @@ func show_cmd($args)
     endif
 
     # load the packages
-    # TODO : handle the log level
-    println "Loading packages list..."
-    println "========================"
+    parham.print_info "Loading packages list...\n"
+    parham.print_info "========================\n"
 
     $i = 0
     while $i < len($args->arguments)
@@ -63,8 +63,7 @@ func show_cmd($args)
         $pkg = parham.Package($pkg_name)
 
         if not $pkg->is_success()
-            # TODO : handle the log level
-            perror 'Error: ' + $pkg->error + '\n'
+            parham.print_err 'Error: ' + $pkg->error + '\n'
         else
             if $pkg_version is null
                 $pkg_version = $pkg->versions[-1] # set latest version as default
@@ -73,8 +72,7 @@ func show_cmd($args)
             $version = $pkg->get_version($pkg_version)
 
             if typeof($version) == string
-                # TODO : handle the log level
-                perror 'Error: ' + $version + '\n'
+                parham.print_err 'Error: ' + $version + '\n'
             else
                 # show the package
                 if $args->has_option('--versions')
@@ -103,8 +101,7 @@ func show_cmd($args)
                         $j = $j + 1
                     endwhile
                 endif
-                # TODO : handle the log level
-                println "========================"
+                parham.print_info "========================\n"
             endif
         endif
 

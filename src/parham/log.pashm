@@ -1,5 +1,5 @@
 #
-# list.pashm
+# log.pashm
 #
 # The Parham Project
 # Copyright 2021 Parham development team,
@@ -21,36 +21,34 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + '/../package.pashm'
-import_once $__dir__ + '/../log.pashm'
+ns parham
 
-ns parham; ns commands
-
-@doc """\
-Shows list of installed packages\n\
-Usage: parham list [options]\n\
-"""
-func list_cmd($args)
-    parham.print_info 'Installed packages:\n'
-    parham.print_info '===================\n'
-
-    # load the package directory
-    $pkg_dir = parham.PackageDirectory()
-
-    $packages = $pkg_dir->installed_list()
-
-    $i = 0
-    while $i < len($packages)
-        $pkg = $packages[$i][0]->get_version($packages[$i][1])
-
-        parham.print_log $pkg->name + ' (' + $packages[$i][1] + ')'
-        if $pkg->description != ''
-            parham.print_log ' - ' + $pkg->description
-        endif
-        parham.print_log '\n'
-
-        $i = $i + 1
-    endwhile
+@doc "Print info texts"
+func print_info(string $txt)
+    if PARHAM_LOG_INFO
+        print $txt
+    endif
 endfunc
 
-endns; endns
+@doc "Print logs texts"
+func print_log(string $txt)
+    if PARHAM_LOG_LOG
+        print $txt
+    endif
+endfunc
+
+@doc "Print warnings"
+func print_warn(string $txt)
+    if PARHAM_LOG_WARN
+        perror $txt
+    endif
+endfunc
+
+@doc "Print errors"
+func print_err(string $txt)
+    if PARHAM_LOG_ERR
+        perror $txt
+    endif
+endfunc
+
+endns

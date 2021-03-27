@@ -53,7 +53,6 @@ func test_query()
     os.chdir($tempdir)
     os.mkdir('parham-test-dir')
     os.chdir('parham-test-dir')
-    # TODO : use `-qqqq` option to make this quiet
     parham.commands.install_cmd(parham.cmdline.parse_args(['f:' + $repo_2_path]))
     $dir_path = os.getcwd()
     os.chdir($old_cwd)
