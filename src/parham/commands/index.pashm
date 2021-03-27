@@ -47,6 +47,18 @@ func index_cmd($args)
     endif
 
     println parham.commands.index_cmd->__docstring__
+
+    println '\nCommands:'
+
+    $i = 0
+    $keys = list($parham.commands.list->keys())
+    while $i < len($keys)
+        if $keys[$i] != 'index'
+            println '    ' + $keys[$i] + '\t\t' + $parham.commands.list[$keys[$i]]->__docstring__->strip()->splitlines()[0]->strip()
+        endif
+
+        $i = $i + 1
+    endwhile
 endfunc
 
 endns; endns
