@@ -28,17 +28,18 @@ import_once @sys
 @doc "Query checker works"
 func test_query()
     # cleanup
-    if os.path.isdir(py_load_module('tempfile')->gettempdir() + '/parham-test-dir')
-        py_load_module('shutil')->rmtree(py_load_module('tempfile')->gettempdir() + '/parham-test-dir')
+    $tempdir = py_load_module('tempfile')->gettempdir()
+    if os.path.isdir($tempdir + '/parham-test-dir')
+        py_load_module('shutil')->rmtree($tempdir + '/parham-test-dir')
     endif
-    if os.path.isdir(py_load_module('tempfile')->gettempdir() + '/parham-test-repo-2')
-        py_load_module('shutil')->rmtree(py_load_module('tempfile')->gettempdir() + '/parham-test-repo-2')
+    if os.path.isdir($tempdir + '/parham-test-repo-2')
+        py_load_module('shutil')->rmtree($tempdir + '/parham-test-repo-2')
     endif
 
     $parham_exe = os.path.abspath($__dir__ + '/../src/parham/parham.pashm')
     # create test package
     $old_cwd = os.getcwd()
-    os.chdir(py_load_module('tempfile')->gettempdir())
+    os.chdir($tempdir)
     os.mkdir('parham-test-repo-2')
     os.chdir('parham-test-repo-2')
     $f = fopen('Parhamfile', 'w')
@@ -48,14 +49,15 @@ func test_query()
     system 'git add -A'
     system 'git commit -m first -q'
     $repo_2_path = os.getcwd()
-    os.chdir(py_load_module('tempfile')->gettempdir())
+    os.chdir($tempdir)
     os.mkdir('parham-test-dir')
     os.chdir('parham-test-dir')
     # TODO : use `-qqqq` option to make this quiet
     system $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
+    $dir_path = os.getcwd()
     os.chdir($old_cwd)
 
-    $d = parham.PackageDirectory(py_load_module('tempfile')->gettempdir() + '/parham-test-dir/pashmak_modules')
+    $d = parham.PackageDirectory($dir_path + '/pashmak_modules')
 
     test.assertEquals $d->query('b'), true
     test.assertEquals $d->query('b = master'), true
