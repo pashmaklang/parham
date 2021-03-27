@@ -57,7 +57,7 @@ func test_query()
     $dir_path = os.getcwd()
     os.chdir($old_cwd)
 
-    println $dir_path + '/pashmak_modules'
+    println os.listdir($dir_path + '/pashmak_modules')
 
     $d = parham.PackageDirectory($dir_path + '/pashmak_modules')
 
