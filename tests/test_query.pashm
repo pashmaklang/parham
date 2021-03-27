@@ -53,7 +53,7 @@ func test_query()
     os.mkdir('parham-test-dir')
     os.chdir('parham-test-dir')
     # TODO : use `-qqqq` option to make this quiet
-    system $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
+    println $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
     $dir_path = os.getcwd()
     os.chdir($old_cwd)
 
