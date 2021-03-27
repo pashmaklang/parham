@@ -38,7 +38,7 @@ func install_cmd($args)
         'min_args': 1,
     })
     if $result is not true
-        println 'parham: install: ' + $result
+        parham.print_warn 'parham: install: ' + $result + '\n'
         return 1
     endif
 

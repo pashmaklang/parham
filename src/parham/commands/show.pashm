@@ -43,7 +43,7 @@ func show_cmd($args)
         }
     })
     if $result is not true
-        println 'parham: show: ' + $result
+        parham.print_warn 'parham: show: ' + $result + '\n'
         return 1
     endif
 
@@ -76,7 +76,7 @@ func show_cmd($args)
             else
                 # show the package
                 if $args->has_option('--versions')
-                    println $pkg_name + ': ' + ', '->join($pkg->versions)
+                    parham.print_log $pkg_name + ': ' + ', '->join($pkg->versions) + '\n'
                 else
                     $j = 0
                     $version->raw_options['version'] = $pkg_version
@@ -86,14 +86,14 @@ func show_cmd($args)
                         $key = $keys[$j]
                         if typeof($version->raw_options[$key]) == list
                             if $version->raw_options[$key]
-                                println $key->capitalize() + ': ' + ', '->join($version->raw_options[$key])
+                                parham.print_log $key->capitalize() + ': ' + ', '->join($version->raw_options[$key]) + '\n'
                             endif
                         else
                             if $version->raw_options[$key] != ''
                                 if $key == 'description_file'
-                                    println 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[2:]
+                                    parham.print_log 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[2:] + '\n'
                                 else
-                                    println $key->capitalize() + ': ' + $version->raw_options[$key]
+                                    parham.print_log $key->capitalize() + ': ' + $version->raw_options[$key] + '\n'
                                 endif
                             endif
                         endif

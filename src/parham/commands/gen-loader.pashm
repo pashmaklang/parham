@@ -34,7 +34,7 @@ func gen_loader_cmd($args)
     $result = $args->validate({
     })
     if $result is not true
-        println 'parham: install: ' + $result
+        parham.print_warn 'parham: gen-loader: ' + $result + '\n'
         return 1
     endif
 
