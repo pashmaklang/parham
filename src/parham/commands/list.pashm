@@ -35,8 +35,7 @@ func list_cmd($args)
     println '==================='
 
     # load the package directory
-    # TODO : handle global mode
-    $pkg_dir = parham.PackageDirectory(os.getcwd() + '/pashmak_modules')
+    $pkg_dir = parham.PackageDirectory()
 
     $packages = $pkg_dir->installed_list()
 

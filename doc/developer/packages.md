@@ -73,6 +73,15 @@ You should pass path of `pashmak_modules` directory to the constructor of the cl
 $pkg_dir = parham.PackageDirectory('/path/to/pashmak_modules') # also you can use other name instead of `pashmak_modules`
 ```
 
+#### Auto path finding
+You can load pkgdir without specifying directory path:
+
+```bash
+$pkg_dir = parham.PackageDirectory()
+```
+
+The above code, will check a name define named `PARHAM_GLOBAL`. if this is `true`, loads global package directory at `<home>/.local/lib/pashmak_modules`, if not, loads `./pashmak_modules`.
+
 ### `is_installed($name)`
 This method checks a package is installed or not. gets unique name of package (for example `parham`).
 

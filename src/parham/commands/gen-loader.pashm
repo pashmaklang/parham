@@ -38,8 +38,7 @@ func gen_loader_cmd($args)
     endif
 
     # load the package directory
-    # TODO : handle global mode
-    $pkg_dir = parham.PackageDirectory(os.getcwd() + '/pashmak_modules')
+    $pkg_dir = parham.PackageDirectory()
 
     $all_paths = []
 

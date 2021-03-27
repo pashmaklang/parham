@@ -31,6 +31,7 @@ Usage: parham [subcommand] [options...] [arguments...]\n\
 General options:\n\
     --help: shows help of a command\n\
     --version: shows version of the Parham\n\
+    --global|-g: enable global mode (for installing/listing packages)
 """
 func index_cmd($args)
     if $args->has_option('--version')

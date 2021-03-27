@@ -181,7 +181,15 @@ endclass
 
 @doc "This class Handles the `pashmak_modules` directory"
 class PackageDirectory
-    func __init__(string $path)
+    func __init__(string $path = null)
+        if $path is null
+            if PARHAM_GLOBAL
+                $path = string(py_load_module('pathlib')->Path()->home()) + '/.local/lib/pashmak_modules'
+            else
+                $path = os.getcwd() + '/pashmak_modules'
+            endif
+        endif
+
         $this->path = $path
 
         # create directory if not exists

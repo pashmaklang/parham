@@ -26,6 +26,8 @@
 
 import_once $__dir__ + '/../scripts/crawler-lib.pashm'
 
+define('PARHAM_GLOBAL', false)
+
 println 'Loading the tests...'
 # load the tests
 $files = Crawler($__dir__, '.pashm')->files_list

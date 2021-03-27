@@ -31,6 +31,18 @@ ns parham
 
 func main(array[string] $argv)
     # parse the arguments
+    $is_global = false
+    if '-g' in $argv
+        $argv->pop($argv->index('-g'))
+        $is_global = true
+    endif
+    if '--global' in $argv
+        $argv->pop($argv->index('--global'))
+        $is_global = true
+    endif
+
+    define('PARHAM_GLOBAL', $is_global)
+
     $args = parham.cmdline.parse_args($argv)
 
     # run the command

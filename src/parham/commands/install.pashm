@@ -23,6 +23,8 @@
 
 import_once $__dir__ + '/../solver.pashm'
 import_once $__dir__ + '/../version.pashm'
+import_once $__dir__ + '/../cmdline.pashm'
+import_once $__dir__ + '/../commands/gen-loader.pashm'
 
 ns parham; ns commands
 
@@ -83,8 +85,7 @@ func install_cmd($args)
     endif
 
     # load the package directory
-    # TODO : handle global mode
-    $pkg_dir = parham.PackageDirectory(os.getcwd() + '/pashmak_modules')
+    $pkg_dir = parham.PackageDirectory()
 
     # add the old packages
     $packages = [*$pkg_dir->installed_list(), *$packages]
@@ -142,13 +143,7 @@ func install_cmd($args)
     endwhile
 
     # run comman gen-loader
-    try parham_handle_run_gen_loader_command
-        parham.main(['gen-loader'])
-    endtry
-    goto after_parham_handle_run_gen_loader_command; label parham_handle_run_gen_loader_command
-        # TODO : handle the log level
-        perror 'Warning: failed to generate the loader. run `parham gen-loader` manually'
-    label after_parham_handle_run_gen_loader_command
+    parham.commands.gen_loader_cmd(parham.cmdline.parse_args([]))
 
     return 0
 endfunc
