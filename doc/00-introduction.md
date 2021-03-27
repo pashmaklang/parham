@@ -83,5 +83,3 @@ import @foo
 You should use the library standard names instead of `@foo`. The library(package) creators should tell this to the users.
 
 You will learn more about package installation in the next parts.
-
-[Next: Shwoing package details](show-command.md)

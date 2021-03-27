@@ -1,0 +1,80 @@
+#
+# test_query.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../src/parham/package.pashm"
+import_once $__dir__ + "/../src/parham/commands/install.pashm"
+import_once $__dir__ + "/../src/parham/cmdline.pashm"
+import_once @test
+
+@doc "Query checker works"
+func test_query()
+    # cleanup
+    $tempdir = py_load_module('tempfile')->gettempdir()
+    if os.path.isdir($tempdir + '/parham-test-dir')
+        py_load_module('shutil')->rmtree($tempdir + '/parham-test-dir')
+    endif
+    if os.path.isdir($tempdir + '/parham-test-repo-2')
+        py_load_module('shutil')->rmtree($tempdir + '/parham-test-repo-2')
+    endif
+
+    $parham_exe = os.path.abspath($__dir__ + '/../src/parham/parham.pashm')
+    # create test package
+    $old_cwd = os.getcwd()
+    os.chdir($tempdir)
+    os.mkdir('parham-test-repo-2')
+    os.chdir('parham-test-repo-2')
+    $f = fopen('Parhamfile', 'w')
+    $f->write('NAME b')
+    $f->close()
+    system 'git init -q'
+    system 'git add -A'
+    system 'git commit -m first -q'
+    $repo_2_path = os.getcwd()
+    os.chdir($tempdir)
+    os.mkdir('parham-test-dir')
+    os.chdir('parham-test-dir')
+    # TODO : use `-qqqq` option to make this quiet
+    parham.commands.install_cmd(parham.cmdline.parse_args(['f:' + $repo_2_path]))
+    $dir_path = os.getcwd()
+    os.chdir($old_cwd)
+
+    $d = parham.PackageDirectory($dir_path + '/pashmak_modules')
+
+    test.assertEquals $d->query('b'), true
+    test.assertEquals $d->query('b = master'), true
+    test.assertEquals $d->query('b != master'), false
+    test.assertEquals $d->query('b = 1.0'), false
+    test.assertEquals $d->query('b > 1.0'), false
+    test.assertEquals $d->query('b < 1.0'), true
+    test.assertEquals $d->query('b <= hi'), true
+    test.assertEquals $d->query('b >= hi'), false
+    test.assertEquals $d->query('b != hi'), true
+    test.assertEquals $d->query('b & z'), false
+    test.assertEquals $d->query('b | z'), true
+endfunc
+
+redefine('TEST', test_query)
+
+if $__ismain__
+    TEST()
+endif

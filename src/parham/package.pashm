@@ -224,6 +224,109 @@ class PackageDirectory
 
         return $result
     endfunc
+
+    @doc "Parses and checks a package query and returns result as boolean"
+    func bool::query(string $query)
+        # parse the query
+        $or_blocks = [or_block.strip().split('&') for or_block in $query->strip()->split('|')]
+
+        $i = 0
+        while $i < len($or_blocks)
+            $j = 0
+            while $j < len($or_blocks[$i])
+                $or_blocks[$i][$j] = $or_blocks[$i][$j]->strip()
+
+                if '>=' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('>=', 1)
+                    $or_blocks[$i][$j]->insert(1, '>=')
+                elif '<=' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('<=', 1)
+                    $or_blocks[$i][$j]->insert(1, '<=')
+                elif '>' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('>', 1)
+                    $or_blocks[$i][$j]->insert(1, '>')
+                elif '<' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('<', 1)
+                    $or_blocks[$i][$j]->insert(1, '<')
+                elif '!=' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('!=', 1)
+                    $or_blocks[$i][$j]->insert(1, '!=')
+                elif '=' in $or_blocks[$i][$j]
+                    $or_blocks[$i][$j] = $or_blocks[$i][$j]->split('=', 1)
+                    $or_blocks[$i][$j]->insert(1, '=')
+                else
+                    $or_blocks[$i][$j] = [$or_blocks[$i][$j]]
+                endif
+
+                $j = $j + 1
+            endwhile
+
+            $i = $i + 1
+        endwhile
+
+        # check the query
+        $installed_packages = $this->installed_list()
+        $only_package_names = [ins_pkg[0]->get_version(ins_pkg[1])->name for ins_pkg in $installed_packages]
+        $pkg_by_version = {}
+        $x = 0
+        while $x < len($installed_packages)
+            $tmp_pkg_name = $installed_packages[$x][0]->get_version($installed_packages[$x][1])->name
+            $pkg_by_version[$tmp_pkg_name] = $installed_packages[$x][1]
+            $x = $x + 1
+        endwhile
+
+        $i = 0
+        while $i < len($or_blocks) # foreach or block
+            $once_result = false
+            $j = 0
+            while $j < len($or_blocks[$i]) # foreach and block in the current or block
+                # check once query
+                if len($or_blocks[$i][$j]) == 1
+                    $once_result = $or_blocks[$i][$j][0]->strip() in $only_package_names
+                elif len($or_blocks[$i][$j]) == 3
+                    $once_result = $or_blocks[$i][$j][0]->strip() in $only_package_names
+                    if $once_result is true
+                        $pkg_name = $or_blocks[$i][$j][0]->strip()
+                        $op = $or_blocks[$i][$j][1]->strip()
+                        $version = $or_blocks[$i][$j][2]->strip()
+                        $current_version = $pkg_by_version[$pkg_name]->strip()
+
+                        if $op == '='
+                            $once_result = parham.version.compare($version, $current_version) == 0
+                        elif $op == '!='
+                            $once_result = parham.version.compare($version, $current_version) != 0
+                        elif $op == '>'
+                            $once_result = parham.version.compare($version, $current_version) == 1
+                        elif $op == '<'
+                            $once_result = parham.version.compare($version, $current_version) == -1
+                        elif $op == '>='
+                            $once_result = parham.version.compare($version, $current_version) >= 0
+                        elif $op == '<='
+                            $once_result = parham.version.compare($version, $current_version) <= 0
+                        else
+                            $once_result = false
+                        endif
+                    endif
+                else
+                    $once_result = false
+                endif
+
+                if $once_result is false
+                    break
+                endif
+
+                $j = $j + 1
+            endwhile
+
+            if $once_result is true
+                return true
+            endif
+
+            $i = $i + 1
+        endwhile
+
+        return false
+    endfunc
 endclass
 
 class Installer

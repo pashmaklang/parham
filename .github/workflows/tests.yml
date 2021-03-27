@@ -17,7 +17,7 @@ jobs:
     - name: Set up Pashmak
       uses: pashmaklang/setup-pashmak@master
       with:
-        pashmak-version: 0.8.2
+        pashmak-version: 0.8.3
 
     - name: Running Tests
       shell: bash

@@ -90,6 +90,15 @@ This method returns list of installed packages in the directory in this structur
 ]
 ```
 
+### Query Checker
+To check a query on the package checker:
+
+```bash
+println $dir->query('foo | bar = 1.0 ...')
+```
+
+([Read query system](../query.md))
+
 ## Class `Installer`
 This class installs a package in a package directory (`pashmak_modules`).
 
