@@ -1,7 +1,0 @@
-import_once $__dir__ + '/src/parham/package.pashm'
-
-$d = parham.PackageDirectory($__dir__ + '/pashmak_modules')
-
-while true
-    println $d->query(read('> '))
-endwhile

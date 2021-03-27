@@ -1,0 +1,61 @@
+import_once $__dir__ + "/../src/parham/package.pashm"
+import_once @test, @sys
+
+@doc "Query checker works"
+func test_query()
+    # cleanup
+    if os.path.isdir(py_load_module('tempfile')->gettempdir() + '/parham-test-dir')
+        py_load_module('shutil')->rmtree(py_load_module('tempfile')->gettempdir() + '/parham-test-dir')
+    endif
+    if os.path.isdir(py_load_module('tempfile')->gettempdir() + '/parham-test-repo-2')
+        py_load_module('shutil')->rmtree(py_load_module('tempfile')->gettempdir() + '/parham-test-repo-2')
+    endif
+
+    $parham_exe = os.path.abspath($__dir__ + '/../src/parham/parham.pashm')
+    # create test package
+    $old_cwd = os.getcwd()
+    os.chdir(py_load_module('tempfile')->gettempdir())
+    os.mkdir('parham-test-repo-2')
+    os.chdir('parham-test-repo-2')
+    $f = fopen('Parhamfile', 'w')
+    $f->write('NAME b')
+    $f->close()
+    system 'git init -q'
+    system 'git add -A'
+    system 'git commit -m first -q'
+    $repo_2_path = os.getcwd()
+    os.chdir(py_load_module('tempfile')->gettempdir())
+    os.mkdir('parham-test-dir')
+    os.chdir('parham-test-dir')
+    # TODO : use `-qqqq` option to make this quiet
+    system $sys.pashmakexe + ' ' + repr($parham_exe) + ' install f:' + repr($repo_2_path)
+    os.chdir($old_cwd)
+
+    $d = parham.PackageDirectory(py_load_module('tempfile')->gettempdir() + '/parham-test-dir/pashmak_modules')
+
+    $tests = [
+        ['b', true],
+        ['b = master', true],
+        ['b != master', false],
+        ['b = 1.0', false],
+        ['b > 1.0', false],
+        ['b < 1.0', true],
+        ['b <= hi', true],
+        ['b >= hi', false],
+        ['b != hi', true],
+        ['b & z', false],
+        ['b | z', true],
+    ]
+
+    $i = 0
+    while $i < len($tests)
+        test.assertEquals $d->query($tests[$i][0]), $tests[$i][1]
+        $i = $i + 1
+    endwhile
+endfunc
+
+redefine('TEST', test_query)
+
+if $__ismain__
+    TEST()
+endif

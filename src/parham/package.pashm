@@ -270,7 +270,8 @@ class PackageDirectory
         $pkg_by_version = {}
         $x = 0
         while $x < len($installed_packages)
-            $pkg_by_version[$installed_packages[$x][0]->get_version($installed_packages[$x][1])->name] = $installed_packages[$x][1]
+            $tmp_pkg_name = $installed_packages[$x][0]->get_version($installed_packages[$x][1])->name
+            $pkg_by_version[$tmp_pkg_name] = $installed_packages[$x][1]
             $x = $x + 1
         endwhile
 
