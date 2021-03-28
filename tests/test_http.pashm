@@ -1,0 +1,54 @@
+#
+# test_http.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../src/parham/http.pashm"
+import_once @test
+
+@doc "HTTP client works"
+func test_http()
+    try http_test_ignore_error
+        $res = parham.http.req('https://github.com/')
+        test.assertEquals $res->getcode(), 200
+
+        $res = parham.http.req('https://github.com/some-not-found-page-123456789')
+        test.assertEquals $res->getcode(), 404
+
+        $res = parham.http.req('https://github.com/')
+        test.assertTrue 'github' in $res->read()->decode()->lower()
+
+        $res = parham.http.req('https://httpbin.org/post')
+        test.assertEquals $res->getcode(), 405
+
+        $res = parham.http.req('https://httpbin.org/post', method='POST')
+        test.assertEquals $res->getcode(), 200
+    endtry
+    goto after_http_test_ignore_error; label http_test_ignore_error
+        print '(Ignored) '
+    label after_http_test_ignore_error
+endfunc
+
+redefine('TEST', test_http)
+
+if $__ismain__
+    TEST()
+endif

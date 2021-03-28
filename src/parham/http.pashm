@@ -1,0 +1,66 @@
+#
+# http.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+ns parham; ns http
+
+@doc "\
+Makes a HTTP request to a URL.\n\
+Arg `url` is the url as string.\n\
+Arg `method` is the HTTP method (default GET).\n\
+Arg `data` is the payload.\n\
+Arg `headers` is the headers as dictionary.\
+"
+func req(string $url, string $method = 'GET', $data = null, dict $headers = {})
+    $method = $method->upper()
+
+    if not 'Content-Type' in $headers->keys()
+        $headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    endif
+
+    if $data is not null
+        $data = py_load_module('urllib.parse')->urlencode($data)->encode()
+    endif
+
+    $parsed_url = py_load_module('urllib.parse')->urlparse($url)
+
+    if $parsed_url->scheme == 'https'
+        $con = py_load_module('http.client')->HTTPSConnection($parsed_url->netloc)
+    else
+        $con = py_load_module('http.client')->HTTPConnection($parsed_url->netloc)
+    endif
+
+    if $parsed_url->query != ''
+        $path = $parsed_url->path + '?' + $parsed_url->query
+        if $path->startswith('?')
+            $path = '/' + $path
+        endif
+    else
+        $path = $parsed_url->path
+    endif
+
+    $con->request($method, $path, body=$data, headers=$headers)
+
+    return $con->getresponse()
+endfunc
+
+endns; endns
