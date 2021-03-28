@@ -45,7 +45,7 @@ func list_cmd($args)
 
         parham.print_log $pkg->name + ' (' + $packages[$i][1] + ')'
         if $pkg->description != ''
-            parham.print_log ' - ' + $pkg->description
+            parham.print_info ' - ' + $pkg->description
         endif
         parham.print_log '\n'
 
