@@ -1,4 +1,6 @@
-<img src="logo.svg" />
+<div align="center">
+  <img width="200" src="logo.svg" alt="Parham">
+</div>
 
 ###### Logo by [Mehan](https://github.com/mehanalavimajd)
 
