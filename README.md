@@ -1,7 +1,5 @@
 <div align="center">
-  <a href="#">
-    <img width="200" src="logo.svg" alt="Parham">
-  </a>
+  <img width="200" src="logo.svg" alt="Parham">
 </div>
 
 ###### Logo by [Mehan](https://github.com/mehanalavimajd)
