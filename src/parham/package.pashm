@@ -48,7 +48,7 @@ class FileDriver
             $this->versions = $this->load_versions()
         endtry
         goto after_parham_package_version_load_error; section parham_package_version_load_error
-            $this->error = 'faild to load list of versions: ' + string(^)
+            $this->error = 'Faild to load list of versions of '+$this->address+': ' + string(^)
             return
         section after_parham_package_version_load_error
     endfunc
