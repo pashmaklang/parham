@@ -9,15 +9,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, ]
-        # TODO : add windows
+        os: [ubuntu-latest]
+        # TODO : add windows and macos
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Pashmak
       uses: pashmaklang/setup-pashmak@master
       with:
-        pashmak-version: 0.8.3
+        pashmak-version: 0.8.4
 
     - name: Running Tests
       shell: bash
