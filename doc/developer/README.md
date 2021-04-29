@@ -6,3 +6,4 @@
 - [Version parser](versions.md)
 - [Package model](packages.md)
 - [Dependency/Conflict solver](solver.md)
+- [HTTP requests](http.md)
