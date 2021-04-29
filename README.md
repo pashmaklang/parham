@@ -29,10 +29,16 @@ $ pashmak src/parham/parham.pashm install f:. --global
 
 Now you can run Parham:
 
-```
+```bash
 $ pashmak @parham ...
 # OR on UNIX systems
 $ parham ...
+```
+
+For updating the Parham, run:
+
+```bash
+$ parham install gh:pashmaklang/parham -g
 ```
 
 ## Documentation

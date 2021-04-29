@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Add github package driver
 - [ ] Create command clear-cache
 - [ ] Add test for package system new parts
 - [ ] Complete Dependency and conflict solver and add test for it
