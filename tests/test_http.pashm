@@ -22,6 +22,7 @@
 #########################################################################
 
 import_once $__dir__ + "/../src/parham/http.pashm"
+import_once $__dir__ + "/../src/parham/package.pashm"
 import_once @test
 
 @doc "HTTP client works"
@@ -41,6 +42,10 @@ func test_http()
 
         $res = parham.http.req('https://httpbin.org/post', method='POST')
         test.assertEquals $res->getcode(), 200
+
+        # test Github package drvier
+        $pkg = parham.Package('gh:pashmaklang/parham')
+        test.assertEquals $pkg->get_version('master')->name, 'parham'
     endtry
     goto after_http_test_ignore_error; label http_test_ignore_error
         print '(Ignored) '

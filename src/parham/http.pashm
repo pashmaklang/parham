@@ -37,6 +37,10 @@ func req(string $url, string $method = 'GET', $data = null, dict $headers = {})
         $headers['Content-Type'] = 'application/x-www-form-urlencoded'
     endif
 
+    if not 'User-Agent' in $headers->keys()
+        $headers['User-Agent'] = 'Parham'
+    endif
+
     if $data is not null
         $data = py_load_module('urllib.parse')->urlencode($data)->encode()
     endif

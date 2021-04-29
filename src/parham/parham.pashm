@@ -102,6 +102,4 @@ endfunc
 
 endns
 
-if $__ismain__
-    parham.main($argv[1:])
-endif
+parham.main($argv[1:])

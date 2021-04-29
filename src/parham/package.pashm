@@ -23,6 +23,7 @@
 
 import_once $__dir__ + '/pfile.pashm'
 import_once $__dir__ + '/version.pashm'
+import_once $__dir__ + '/http.pashm'
 
 ns parham
 
@@ -116,6 +117,116 @@ class FileDriver
     @doc "Returns list of repo branches"
     func list[string]::get_branches()
         return os.listdir($this->address + '/.git/refs/heads')
+    endfunc
+endclass
+
+@doc "Package driver for GitHub repositories"
+class GithubDriver
+    func __init__(string $address)
+        $this->error = null
+        $this->address = $address
+
+        # send a request to the github server
+        try parham_github_init
+            $res = parham.http.req('https://github.com/' + $this->address)
+
+            if $res->getcode() != 200
+                $this->error = 'Failed to load ' + 'https://github.com/' + $this->address + ': ' + string($res->getcode()) + ' Status code'
+                return
+            endif
+        endtry
+        goto after_parham_github_init; label parham_github_init
+            $this->error = 'Failed to make http connection to the ' + 'https://github.com/' + $this->address
+            return
+        label after_parham_github_init
+
+        try parham_package_version_load_error
+            $this->versions = $this->load_versions()
+        endtry
+        goto after_parham_package_version_load_error; section parham_package_version_load_error
+            $this->error = 'Failed to load list of versions of '+$this->address+': ' + string(^)
+            return
+        section after_parham_package_version_load_error
+    endfunc
+
+    @doc "Returns list of versions"
+    func load_versions()
+        $this->default_branch = null
+        $branches = $this->get_branches()
+        if 'main' in $branches
+            $this->default_branch = 'main'
+        elif 'dev' in $branches
+            $this->default_branch = 'dev'
+        elif 'devel' in $branches
+            $this->default_branch = 'devel'
+        elif 'develop' in $branches
+            $this->default_branch = 'develop'
+        elif 'master' in $branches
+            $this->default_branch = 'master'
+        else
+            $this->default_branch = $branches[0]
+        endif
+
+        # read the Github
+        $res = parham.http.req('https://api.github.com/repos/' + $this->address + '/git/matching-refs/tags')
+        $json_res = json.loads($res->read()->decode())
+
+        # extract tag names
+        $list = [item['ref'][10:] for item in $json_res]
+
+        if not $list
+            $list = [$this->default_branch]
+        endif
+
+        return $list
+    endfunc
+
+    @doc "Gets a version and file name and loads the file in that version"
+    func string::load_file_content(string $version, string $filename)
+        # github url to read
+        $url = 'https://raw.githubusercontent.com/' + $this->address + '/' + $version + '/' + $filename
+
+        $output = ''
+
+        # read the github
+        try parham_package_handle_git_command_error
+            $output = parham.http.req($url)->read()->decode()
+        endtry
+        goto after_parham_package_handle_git_command_error; label parham_package_handle_git_command_error
+            $output = ''
+        label after_parham_package_handle_git_command_error
+
+        return $output
+    endfunc
+
+    @doc "Loads `Parhamfile` of a specify version"
+    func string::load_once_version(string $version)
+        return $this->load_file_content($version, 'Parhamfile')
+    endfunc
+
+    @doc "Copies package directory to the target path"
+    func download(string $path, string $version)
+        if os.path.isdir($path)
+            py_load_module('shutil')->rmtree($path)
+        endif
+
+        system('git clone https://github.com/' + $this->address + '.git ' + $path)
+        $old_cwd = os.getcwd()
+        os.chdir($path)
+        system('git checkout -b parham-installation ' + $version)
+        os.chdir($old_cwd)
+    endfunc
+
+    @doc "Returns list of repo branches"
+    func get_branches()
+        # read the Github
+        $res = parham.http.req('https://api.github.com/repos/' + $this->address + '/git/matching-refs/heads')
+        $json_res = json.loads($res->read()->decode())
+
+        # extract branch names
+        $ref_names = [item['ref'][11:] for item in $json_res]
+
+        return $ref_names
     endfunc
 endclass
 
