@@ -1,5 +1,5 @@
 #
-# __init__.pashm
+# clear-cache.pashm
 #
 # The Parham Project
 # Copyright 2021 Parham development team,
@@ -21,22 +21,21 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + '/index.pashm'
-import_once $__dir__ + '/show.pashm'
-import_once $__dir__ + '/install.pashm'
-import_once $__dir__ + '/gen-loader.pashm'
-import_once $__dir__ + '/list.pashm'
-import_once $__dir__ + '/clear-cache.pashm'
+import_once $__dir__ + '/../log.pashm'
+import_once $__dir__ + '/../cache.pashm'
 
 ns parham; ns commands
 
-$list = {
-    'index': index_cmd,
-    'show': show_cmd,
-    'install': install_cmd,
-    'gen-loader': gen_loader_cmd,
-    'list': list_cmd,
-    'clear-cache': clear_cache_cmd,
-}
+@doc """\
+Clears the downloaded packages cache\n\
+Usage: parham clear-cache\
+"""
+func clear_cache_cmd($args)
+    if os.path.isdir($parham.cache_dir)
+        py_load_module('shutil')->rmtree($parham.cache_dir)
+    endif
+
+    parham.print_info "Cache has been cleared successfully\n"
+endfunc
 
 endns; endns

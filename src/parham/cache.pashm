@@ -1,5 +1,5 @@
 #
-# __init__.pashm
+# cache.pashm
 #
 # The Parham Project
 # Copyright 2021 Parham development team,
@@ -21,22 +21,8 @@
 # along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
 #########################################################################
 
-import_once $__dir__ + '/index.pashm'
-import_once $__dir__ + '/show.pashm'
-import_once $__dir__ + '/install.pashm'
-import_once $__dir__ + '/gen-loader.pashm'
-import_once $__dir__ + '/list.pashm'
-import_once $__dir__ + '/clear-cache.pashm'
+ns parham
 
-ns parham; ns commands
+$cache_dir = string(py_load_module('pathlib')->Path()->home()) + '/.parham_cache'
 
-$list = {
-    'index': index_cmd,
-    'show': show_cmd,
-    'install': install_cmd,
-    'gen-loader': gen_loader_cmd,
-    'list': list_cmd,
-    'clear-cache': clear_cache_cmd,
-}
-
-endns; endns
+endns

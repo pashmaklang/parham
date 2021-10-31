@@ -24,6 +24,8 @@
 import_once $__dir__ + '/pfile.pashm'
 import_once $__dir__ + '/version.pashm'
 import_once $__dir__ + '/http.pashm'
+import_once $__dir__ + '/cache.pashm'
+import_once @hash
 
 ns parham
 
@@ -206,15 +208,36 @@ class GithubDriver
 
     @doc "Copies package directory to the target path"
     func download(string $path, string $version)
+        if not os.path.isdir($parham.cache_dir)
+            os.mkdir($parham.cache_dir)
+        endif
+
         if os.path.isdir($path)
             py_load_module('shutil')->rmtree($path)
         endif
 
-        system('git clone https://github.com/' + $this->address + '.git ' + $path)
-        $old_cwd = os.getcwd()
-        os.chdir($path)
-        system('git checkout -b parham-installation ' + $version)
-        os.chdir($old_cwd)
+        $repo_cache_dirname = $parham.cache_dir + '/' + hash.sha256($this->address + $version)
+
+        if not os.path.isdir($repo_cache_dirname)
+            system('git clone https://github.com/' + $this->address + '.git ' + $repo_cache_dirname)
+            $old_cwd = os.getcwd()
+            os.chdir($repo_cache_dirname)
+            system('git checkout -b parham-installation ' + $version)
+            os.chdir($old_cwd)
+        else
+            # refresh the cache
+            $old_cwd = os.getcwd()
+            os.chdir($repo_cache_dirname)
+            system('git checkout ' + $this->default_branch)
+            system('git pull')
+            system('git pull --tags')
+            system('git branch -D parham-installation')
+            system('git checkout -b parham-installation ' + $version)
+            os.chdir($old_cwd)
+            pass # TODO : log that we are using the cache
+        endif
+
+        py_load_module('shutil')->copytree($repo_cache_dirname, $path)
     endfunc
 
     @doc "Returns list of repo branches"
