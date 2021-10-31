@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Add test for package system new parts
 - [ ] Complete Dependency and conflict solver and add test for it
 - [ ] Handle installation from Parhamfile
 - [ ] Create command create-project
