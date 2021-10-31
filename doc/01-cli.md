@@ -56,3 +56,12 @@ foo (1.0) - Description of the foo
 bar (14.6.0) - Description of the bar
 ...
 ```
+
+## Command `clear-cache`
+when you install a package, the downloaded stuff from github/other will be cached
+and at the next times, the cache will be used.
+If you want to clear the cache for any reason, you can use this command.
+
+```bash
+$ parham clear-cache
+```
