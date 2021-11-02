@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Add doc and test for script system
+- [ ] Add test for script system
 - [ ] Complete Dependency and conflict solver and add test for it
 - [ ] Create command remove
 - [ ] Handle installation from Parhamfile
