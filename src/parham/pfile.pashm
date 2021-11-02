@@ -60,13 +60,14 @@ class ParhamFile
         $result->raw_options->setdefault('require', [])
         $result->raw_options->setdefault('conflict', [])
         $result->raw_options->setdefault('path', [])
+        $result->raw_options->setdefault('script', [])
         
         $i = 0
         while $i < len($orig_lines)
             $parts = $orig_lines[$i]->split(' ', 1)
             $name = $parts[0]->strip()->lower()
             $value = $parts[1]->strip()
-            if $name in ('require', 'conflict', 'path')
+            if $name in ('require', 'conflict', 'path', 'script')
                 $result->raw_options[$name]->append($value)
             else
                 $result->raw_options[$name] = $value
@@ -86,6 +87,7 @@ class ParhamFile
         $this->raw_options->setdefault('description_file', '')
         $this->raw_options->setdefault('author', '')
         $this->raw_options->setdefault('license', '')
+        $this->raw_options->setdefault('default_script', None)
 
         $i = 0
         $keys = list($this->raw_options->keys())
@@ -109,6 +111,10 @@ class ParhamFile
                 $this->author = $v
             elif $k == 'license'
                 $this->license = $v
+            elif $k == 'script'
+                $this->script = $v
+            elif $k == 'default_script'
+                $this->default_script = $v
             endif
 
             $i = $i + 1

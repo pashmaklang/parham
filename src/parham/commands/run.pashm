@@ -1,0 +1,90 @@
+#
+# run.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + '/../log.pashm'
+import_once $__dir__ + '/../package.pashm'
+import_once @sys
+
+ns parham; ns commands
+
+@doc """\
+Runs a script from Parhamfile\n\
+Usage: parham run [script name]\n\
+Defining the scripts in Parhamfile: script [script name without space] [pashmak script file path] [arguments to script (optional)]\n\
+Example: script build scripts/build.pashm\
+"""
+func run_cmd($args)
+    # load the Parhamfile
+    $pkg = parham.Package('f:.')
+    if not $pkg->is_success()
+        parham.print_err 'parham: run: faild to load Parhamfile: ' + $pkg->error + '\n'
+        return 1
+    endif
+
+    $pfile = $pkg->get_version($pkg->versions[-1])
+    $scripts = $pfile->script
+    $default_script = $pfile->default_script
+
+    $parsed_scripts = {}
+    $i = 0
+    while $i < len($scripts)
+        $script_name = $scripts[$i]->strip()->split(' ', 1)
+
+        if len($script_name) <= 1
+            $parsed_scripts[$script_name[0]] = None
+        else
+            $parsed_scripts[$script_name[0]] = $script_name[1]
+        endif
+
+        $i = $i + 1
+    endwhile
+
+    # determine script to run
+    if $args->arguments
+        $script_to_run = $args->arguments[0]
+    else
+        $script_to_run = $default_script
+    endif
+
+    if $script_to_run is None
+        parham.print_err "parham: run: There is not any default script. You should give a name\n"
+        return 1
+    endif
+
+    if $script_to_run not in $parsed_scripts
+        parham.print_err "parham: run: script \""+$script_to_run+"\" not found in Parhamfile\n"
+        return 1
+    endif
+
+    if $parsed_scripts[$script_to_run] is None
+        parham.print_err "parham: run: script \""+$script_to_run+"\" has not any target\n"
+        return 1
+    endif
+
+    # run the script
+    $file_to_run = $parsed_scripts[$script_to_run]
+    $arguments = $args->arguments[1:]
+    return py_load_module('subprocess')->run([$sys.pashmakexe, $file_to_run, *$arguments])->returncode
+endfunc
+
+endns; endns

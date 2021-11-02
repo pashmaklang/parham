@@ -27,6 +27,7 @@ import_once $__dir__ + '/install.pashm'
 import_once $__dir__ + '/gen-loader.pashm'
 import_once $__dir__ + '/list.pashm'
 import_once $__dir__ + '/clear-cache.pashm'
+import_once $__dir__ + '/run.pashm'
 
 ns parham; ns commands
 
@@ -37,6 +38,7 @@ $list = {
     'gen-loader': gen_loader_cmd,
     'list': list_cmd,
     'clear-cache': clear_cache_cmd,
+    'run': run_cmd,
 }
 
 endns; endns
