@@ -23,6 +23,7 @@
 
 import_once $__dir__ + "/../src/parham/package.pashm"
 import_once $__dir__ + "/../src/parham/commands/install.pashm"
+import_once $__dir__ + "/../src/parham/commands/gen-loader.pashm"
 import_once $__dir__ + "/../src/parham/cmdline.pashm"
 import_once @test
 
@@ -44,7 +45,7 @@ func test_query()
     os.mkdir('parham-test-repo-2')
     os.chdir('parham-test-repo-2')
     $f = fopen('Parhamfile', 'w')
-    $f->write('NAME b')
+    $f->write('NAME b\nPATH .\nPATH ./something')
     $f->close()
     system 'git init -q'
     system 'git add -A'
@@ -70,6 +71,12 @@ func test_query()
     test.assertEquals $d->query('b != hi'), true
     test.assertEquals $d->query('b & z'), false
     test.assertEquals $d->query('b | z'), true
+
+    parham.commands.gen_loader_cmd(parham.cmdline.parse_args([]))
+
+    $loader_content = fopen($dir_path + '/pashmak_modules/load.pashm', 'r')->read()->strip()
+
+    test.assertEquals $loader_content, '$all_paths = [\''+$dir_path+'/pashmak_modules/b\', \''+$dir_path+'/pashmak_modules/b/something\']; python("os.environ[\'PASHMAKPATH\'] = \';\'.join(self.get_var(\'all_paths\')); self.bootstrap_modules()"); free("all_paths")'
 endfunc
 
 redefine('TEST', test_query)
