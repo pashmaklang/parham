@@ -93,7 +93,7 @@ func show_cmd($args)
                                 if $key == 'description_file'
                                     parham.print_log 'Long Description: ' + '\n'.join(['  ' + line for line in $pkg->driver->load_file_content($pkg_version, $version->raw_options[$key])->splitlines()])[2:] + '\n'
                                 else
-                                    parham.print_log $key->capitalize() + ': ' + $version->raw_options[$key] + '\n'
+                                    parham.print_log $key->capitalize() + ': ' + string($version->raw_options[$key]) + '\n'
                                 endif
                             endif
                         endif
