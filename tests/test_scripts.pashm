@@ -1,0 +1,64 @@
+#
+# test_scripts.pashm
+#
+# The Parham Project
+# Copyright 2021 Parham development team,
+#           2021 parsa shahmaleki <parsampsh@gmail.com>
+#
+# This file is part of Parham.
+#
+# Parham is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parham is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pashmak.  If not, see <https://www.gnu.org/licenses/>.
+#########################################################################
+
+import_once $__dir__ + "/../src/parham/commands/run.pashm"
+import_once $__dir__ + "/../src/parham/cmdline.pashm"
+import_once @test
+
+@doc "Script system works"
+func test_scripts()
+    os.chdir($__dir__ + '/files')
+
+    system('git init -q')
+    system('git add -A')
+    system('git commit -m a -q')
+    system('git tag 0.1')
+
+    parham.commands.run_cmd(parham.cmdline.parse_args(['my-script']))
+    $f = fopen($__dir__ + '/files/a1.txt', 'r')
+    test.assertEquals('test', $f->read())
+    $f->close()
+    os.remove($__dir__ + '/files/a1.txt')
+
+    parham.commands.run_cmd(parham.cmdline.parse_args(['my-script-2']))
+    $f = fopen($__dir__ + '/files/a2.txt', 'r')
+    test.assertEquals('test', $f->read())
+    $f->close()
+    os.remove($__dir__ + '/files/a2.txt')
+
+    parham.commands.run_cmd(parham.cmdline.parse_args([]))
+    $f = fopen($__dir__ + '/files/a2.txt', 'r')
+    test.assertEquals('test', $f->read())
+    $f->close()
+    os.remove($__dir__ + '/files/a2.txt')
+
+    py_load_module('shutil')->rmtree('.git')
+
+    os.chdir($__dir__ + '/..')
+endfunc
+
+redefine('TEST', test_scripts)
+
+if $__ismain__
+    TEST()
+endif

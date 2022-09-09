@@ -11,3 +11,8 @@ REQUIRE vendor/package
 
 # test comment
 CONFLICT vendor2/package2 # other comment
+
+SCRIPT my-script a-test-script.pashm1
+SCRIPT my-script-2 a-test-script-2.pashm1
+
+DEFAULT_SCRIPT my-script-2
